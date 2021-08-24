@@ -114,7 +114,8 @@ RUN { \
 
 # Clone phabricator
 RUN git clone https://github.com/phacility/arcanist /opt/arcanist
-RUN git clone https://github.com/moonmana-games/phabricator /opt/phabricator
+# RUN git clone https://github.com/moonmana-games/phabricator /opt/phabricator
+COPY ./ /opt/phabricator
 
 WORKDIR /opt/phabricator
 
