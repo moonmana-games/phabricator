@@ -112,9 +112,9 @@ RUN { \
     } > /etc/apache2/sites-available/000-default.conf
 ##### End Phabricator
 
-# COPY ./ /opt/phabricator
-RUN git clone https://github.com/moonmana-games/phabricator /opt/phabricator
+# Clone phabricator
 RUN git clone https://github.com/phacility/arcanist /opt/arcanist
+RUN git clone https://github.com/moonmana-games/phabricator /opt/phabricator
 
 WORKDIR /opt/phabricator
 
