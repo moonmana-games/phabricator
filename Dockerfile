@@ -2,7 +2,7 @@
 FROM php:7.3-apache-buster
 ##### End Phabricator
 
-LABEL org.opencontainers.image.source https://github.com/phabricator-docker/phabricator
+LABEL org.opencontainers.image.source https://github.com/moonmana-games/phabricator
 
 # Required Components
 # @see https://secure.phabricator.com/book/phabricator/article/installation_guide/#installing-required-comp
