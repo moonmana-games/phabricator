@@ -264,7 +264,7 @@ final class PhabricatorRoleTransactionEditor
   }
 
   public function addSlug(PhabricatorRole $role, $slug, $force) {
-    //$slug = PhabricatorSlug::normalizeRoleSlug($slug);
+    $slug = PhabricatorSlug::normalizeProjectSlug($slug);
     $table = new PhabricatorRoleSlug();
     $role_phid = $role->getPHID();
 
@@ -317,9 +317,9 @@ final class PhabricatorRoleTransactionEditor
   }
 
   public function normalizeSlugs(array $slugs) {
-    //foreach ($slugs as $key => $slug) {
-     // $slugs[$key] = PhabricatorSlug::normalizeRoleSlug($slug);
-    //}
+    foreach ($slugs as $key => $slug) {
+      $slugs[$key] = PhabricatorSlug::normalizeProjectSlug($slug);
+    }
 
     $slugs = array_unique($slugs);
     $slugs = array_values($slugs);

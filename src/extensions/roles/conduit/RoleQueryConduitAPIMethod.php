@@ -117,11 +117,11 @@ final class RoleQueryConduitAPIMethod extends RoleConduitAPIMethod {
     $slug_map = array();
     if ($slugs) {
       foreach ($slugs as $slug) {
-        //$normal = PhabricatorSlug::normalizeRoleSlug($slug);
+        $normal = PhabricatorSlug::normalizeProjectSlug($slug);
         foreach ($roles as $role) {
-          //if (in_array($normal, $role['slugs'])) {
+          if (in_array($normal, $role['slugs'])) {
             $slug_map[$slug] = $role['phid'];
-          //}
+          }
         }
       }
     }

@@ -12,7 +12,7 @@ final class PhabricatorRoleNameTransaction
   public function applyInternalEffects($object, $value) {
     $object->setName($value);
     if (!$this->getEditor()->getIsMilestone()) {
-      $object->setPrimarySlug(/*PhabricatorSlug::normalizeRoleSlug*/($value));
+      $object->setPrimarySlug(PhabricatorSlug::normalizeProjectSlug($value));
     }
   }
 
@@ -87,12 +87,12 @@ final class PhabricatorRoleNameTransaction
 
     $name = last($xactions)->getNewValue();
 
-   // if (!PhabricatorSlug::isValidRoleSlug($name)) {
-    //  $errors[] = $this->newInvalidError(
-   //     pht('Role names must contain at least one letter or number.'));
-   //}
+    if (!PhabricatorSlug::isValidProjectSlug($name)) {
+      $errors[] = $this->newInvalidError(
+        pht('Role names must contain at least one letter or number.'));
+   }
 
-    $slug = /*PhabricatorSlug::normalizeRoleSlug*/($name);
+    $slug = PhabricatorSlug::normalizeProjectSlug($name);
 
     $slug_used_already = id(new PhabricatorRoleSlug())
       ->loadOneWhere('slug = %s', $slug);

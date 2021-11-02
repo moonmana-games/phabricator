@@ -40,13 +40,13 @@ abstract class PhabricatorRoleController extends PhabricatorController {
 
     $slug = $request->getURIData('slug');
 
-    //if ($slug) {
-      //$normal_slug = PhabricatorSlug::normalizeRoleSlug($slug);
-      //$is_abnormal = ($slug !== $normal_slug);
-      //$normal_uri = "/tag/{$normal_slug}/";
-    //} else {
+    if ($slug) {
+      $normal_slug = PhabricatorSlug::normalizeProjectSlug($slug);
+      $is_abnormal = ($slug !== $normal_slug);
+      $normal_uri = "/tag/{$normal_slug}/";
+    } else {
       $is_abnormal = false;
-    //}
+    }
 
     $query = id(new PhabricatorRoleQuery())
       ->setViewer($viewer)

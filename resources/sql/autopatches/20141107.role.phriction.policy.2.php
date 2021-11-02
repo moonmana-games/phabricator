@@ -29,7 +29,7 @@ foreach (new LiskMigrationIterator($table) as $doc) {
     $parts = explode('/', $slug);
 
     $role_slug = $parts[1];
-    $role_slug = PhabricatorSlug::normalizeRoleSlug($role_slug);
+    $role_slug = PhabricatorSlug::normalizeProjectSlug($role_slug);
 
     $role_slugs = array($role_slug);
     $role = id(new PhabricatorRoleQuery())

@@ -10,7 +10,7 @@ $roles = $table->loadAll();
 $slug_map = array();
 
 foreach ($roles as $role) {
-  $slug = PhabricatorSlug::normalizeRoleSlug($role->getName());
+  $slug = PhabricatorSlug::normalizeProjectSlug($role->getName());
 
   if (!strlen($slug)) {
     $role_id = $role->getID();
@@ -49,7 +49,7 @@ while ($update) {
     $id = $role->getID();
     $name = $role->getName();
 
-    $slug = PhabricatorSlug::normalizeRoleSlug($name).'/';
+    $slug = PhabricatorSlug::normalizeProjectSlug($name).'/';
 
     echo pht("Updating role #%d '%s' (%s)... ", $id, $name, $slug);
     try {
@@ -89,7 +89,7 @@ function rename_role($role, $roles) {
   while (true) {
     $new_name = $role->getName().' ('.$suffix.')';
 
-    $new_slug = PhabricatorSlug::normalizeRoleSlug($new_name).'/';
+    $new_slug = PhabricatorSlug::normalizeProjectSlug($new_name).'/';
 
     $okay = true;
     foreach ($roles as $other) {
@@ -97,7 +97,7 @@ function rename_role($role, $roles) {
         continue;
       }
 
-      $other_slug = PhabricatorSlug::normalizeRoleSlug($other->getName());
+      $other_slug = PhabricatorSlug::normalizeProjectSlug($other->getName());
       if ($other_slug == $new_slug) {
         $okay = false;
         break;

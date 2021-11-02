@@ -12,7 +12,7 @@ foreach (new LiskMigrationIterator($role_table) as $role) {
 
   echo pht('Migrating role %d...', $id)."\n";
 
-  $slug_text = PhabricatorSlug::normalizeRoleSlug($role->getName());
+  $slug_text = PhabricatorSlug::normalizeProjectSlug($role->getName());
   $slug = id(new PhabricatorRoleSlug())
     ->loadOneWhere('slug = %s', $slug_text);
 
