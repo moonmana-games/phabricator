@@ -6,6 +6,7 @@
  * @generated
  * @phutil-library-version 2
  */
+
 phutil_register_library_map(array(
   '__library_version__' => 2,
   'class' => array(
