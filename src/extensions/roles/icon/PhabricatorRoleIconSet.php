@@ -76,9 +76,9 @@ final class PhabricatorRoleIconSet
       ),
       array(
         'key' => 'art',
-        'icon' => 'fa-umbrella',
+        'icon' => 'fa-paint-brush',
         'name' => pht('Art'),
-        'image' => 'v3/umbrella.png',
+        'image' => 'v3/art.png',
       ),
       array(
         'key' => 'communication',
