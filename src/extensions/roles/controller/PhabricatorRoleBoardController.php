@@ -17,7 +17,7 @@ abstract class PhabricatorRoleBoardController
     $role = $this->getRole();
     $request = $this->getRequest();
 
-    return id(new PhabricatorWorkboardViewState())
+    return id(new PhabricatorRoleWorkboardViewState())
       ->setRole($role)
       ->readFromRequest($request);
   }

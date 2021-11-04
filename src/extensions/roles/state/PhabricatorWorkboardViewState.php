@@ -1,6 +1,6 @@
 <?php
 
-final class PhabricatorWorkboardViewState
+final class PhabricatorRoleWorkboardViewState
   extends Phobject {
 
   private $viewer;

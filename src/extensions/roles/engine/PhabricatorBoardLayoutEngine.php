@@ -331,7 +331,7 @@ final class PhabricatorBoardLayoutEngine extends Phobject {
 
     $need_children = array();
     foreach ($boards as $phid => $board) {
-      if ($board->getHasMilestones() || $board->getHasSubroles()) {
+      if ($board->getHasMilestones()) {
         $need_children[] = $phid;
       }
     }
@@ -352,7 +352,7 @@ final class PhabricatorBoardLayoutEngine extends Phobject {
       $board_columns = idx($columns, $board_phid, array());
 
       // If the role has milestones, create any missing columns.
-      if ($board->getHasMilestones() || $board->getHasSubroles()) {
+      if ($board->getHasMilestones()) {
         $child_roles = idx($children, $board_phid, array());
 
         if ($board_columns) {

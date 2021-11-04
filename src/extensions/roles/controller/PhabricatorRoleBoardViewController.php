@@ -304,7 +304,7 @@ final class PhabricatorRoleBoardViewController
       'rolePHID' => $role->getPHID(),
       'preloadSounds' => $sounds,
     );
-    $this->initBehavior('role-boards', $behavior_config);
+    $this->initBehavior('project-boards', $behavior_config);
 
     $sort_menu = $this->buildSortMenu(
       $viewer,
