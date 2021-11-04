@@ -6,7 +6,7 @@ USE `{$NAMESPACE}_role`;
 
  SET character_set_client = {$CHARSET} ;
 
-CREATE TABLE `edge` (
+CREATE TABLE IF NOT EXISTS `edge` (
   `src` varbinary(64) NOT NULL,
   `type` int(10) unsigned NOT NULL,
   `dst` varbinary(64) NOT NULL,
@@ -24,7 +24,7 @@ USE `{$NAMESPACE}_role`;
 
  SET character_set_client = {$CHARSET} ;
 
-CREATE TABLE `edgedata` (
+CREATE TABLE IF NOT EXISTS `edgedata` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `data` longtext CHARACTER SET {$CHARSET} COLLATE {$COLLATE_TEXT} NOT NULL,
   PRIMARY KEY (`id`)
@@ -36,7 +36,7 @@ USE `{$NAMESPACE}_role`;
 
  SET character_set_client = {$CHARSET} ;
 
-CREATE TABLE `role` (
+CREATE TABLE IF NOT EXISTS `role` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(128) CHARACTER SET {$CHARSET_SORT} COLLATE {$COLLATE_SORT} NOT NULL,
   `phid` varbinary(64) NOT NULL,
@@ -81,7 +81,7 @@ USE `{$NAMESPACE}_role`;
 
  SET character_set_client = {$CHARSET} ;
 
-CREATE TABLE `role_column` (
+CREATE TABLE IF NOT EXISTS `role_column` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `phid` varbinary(64) NOT NULL,
   `name` varchar(255) CHARACTER SET {$CHARSET} COLLATE {$COLLATE_TEXT} NOT NULL,
@@ -107,7 +107,7 @@ USE `{$NAMESPACE}_role`;
 
  SET character_set_client = {$CHARSET} ;
 
-CREATE TABLE `role_columnposition` (
+CREATE TABLE IF NOT EXISTS `role_columnposition` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `boardPHID` varbinary(64) NOT NULL,
   `columnPHID` varbinary(64) NOT NULL,
@@ -125,7 +125,7 @@ USE `{$NAMESPACE}_role`;
 
  SET character_set_client = {$CHARSET} ;
 
-CREATE TABLE `role_columntransaction` (
+CREATE TABLE IF NOT EXISTS `role_columntransaction` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `phid` varbinary(64) NOT NULL,
   `authorPHID` varbinary(64) NOT NULL,
@@ -152,7 +152,7 @@ USE `{$NAMESPACE}_role`;
 
  SET character_set_client = {$CHARSET} ;
 
-CREATE TABLE `role_customfieldnumericindex` (
+CREATE TABLE IF NOT EXISTS `role_customfieldnumericindex` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `objectPHID` varbinary(64) NOT NULL,
   `indexKey` binary(12) NOT NULL,
@@ -168,7 +168,7 @@ USE `{$NAMESPACE}_role`;
 
  SET character_set_client = {$CHARSET} ;
 
-CREATE TABLE `role_customfieldstorage` (
+CREATE TABLE IF NOT EXISTS `role_customfieldstorage` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `objectPHID` varbinary(64) NOT NULL,
   `fieldIndex` binary(12) NOT NULL,
@@ -183,7 +183,7 @@ USE `{$NAMESPACE}_role`;
 
  SET character_set_client = {$CHARSET} ;
 
-CREATE TABLE `role_customfieldstringindex` (
+CREATE TABLE IF NOT EXISTS `role_customfieldstringindex` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `objectPHID` varbinary(64) NOT NULL,
   `indexKey` binary(12) NOT NULL,
@@ -199,7 +199,7 @@ USE `{$NAMESPACE}_role`;
 
  SET character_set_client = {$CHARSET} ;
 
-CREATE TABLE `role_datasourcetoken` (
+CREATE TABLE IF NOT EXISTS `role_datasourcetoken` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `roleID` int(10) unsigned NOT NULL,
   `token` varchar(128) CHARACTER SET {$CHARSET} COLLATE {$COLLATE_TEXT} NOT NULL,
@@ -214,7 +214,7 @@ USE `{$NAMESPACE}_role`;
 
  SET character_set_client = {$CHARSET} ;
 
-CREATE TABLE `role_role_fdocument` (
+CREATE TABLE IF NOT EXISTS `role_role_fdocument` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `objectPHID` varbinary(64) NOT NULL,
   `isClosed` tinyint(1) NOT NULL,
@@ -236,7 +236,7 @@ USE `{$NAMESPACE}_role`;
 
  SET character_set_client = {$CHARSET} ;
 
-CREATE TABLE `role_role_ffield` (
+CREATE TABLE IF NOT EXISTS `role_role_ffield` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `documentID` int(10) unsigned NOT NULL,
   `fieldKey` varchar(4) CHARACTER SET {$CHARSET} COLLATE {$COLLATE_TEXT} NOT NULL,
@@ -253,7 +253,7 @@ USE `{$NAMESPACE}_role`;
 
  SET character_set_client = {$CHARSET} ;
 
-CREATE TABLE `role_role_fngrams` (
+CREATE TABLE IF NOT EXISTS `role_role_fngrams` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `documentID` int(10) unsigned NOT NULL,
   `ngram` char(3) CHARACTER SET {$CHARSET} COLLATE {$COLLATE_TEXT} NOT NULL,
@@ -268,7 +268,7 @@ USE `{$NAMESPACE}_role`;
 
  SET character_set_client = {$CHARSET} ;
 
-CREATE TABLE `role_role_fngrams_common` (
+CREATE TABLE IF NOT EXISTS `role_role_fngrams_common` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ngram` char(3) CHARACTER SET {$CHARSET} COLLATE {$COLLATE_TEXT} NOT NULL,
   `needsCollection` tinyint(1) NOT NULL,
@@ -283,7 +283,7 @@ USE `{$NAMESPACE}_role`;
 
  SET character_set_client = {$CHARSET} ;
 
-CREATE TABLE `role_slug` (
+CREATE TABLE IF NOT EXISTS `role_slug` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `rolePHID` varbinary(64) NOT NULL,
   `slug` varchar(128) CHARACTER SET {$CHARSET} COLLATE {$COLLATE_TEXT} NOT NULL,
@@ -300,7 +300,7 @@ USE `{$NAMESPACE}_role`;
 
  SET character_set_client = {$CHARSET} ;
 
-CREATE TABLE `role_transaction` (
+CREATE TABLE IF NOT EXISTS `role_transaction` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `phid` varbinary(64) NOT NULL,
   `authorPHID` varbinary(64) NOT NULL,
@@ -327,7 +327,7 @@ USE `{$NAMESPACE}_role`;
 
  SET character_set_client = {$CHARSET} ;
 
-CREATE TABLE `role_trigger` (
+CREATE TABLE IF NOT EXISTS `role_trigger` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `phid` varbinary(64) NOT NULL,
   `name` varchar(255) CHARACTER SET {$CHARSET} COLLATE {$COLLATE_TEXT} NOT NULL,
@@ -345,7 +345,7 @@ USE `{$NAMESPACE}_role`;
 
  SET character_set_client = {$CHARSET} ;
 
-CREATE TABLE `role_triggertransaction` (
+CREATE TABLE IF NOT EXISTS `role_triggertransaction` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `phid` varbinary(64) NOT NULL,
   `authorPHID` varbinary(64) NOT NULL,
@@ -372,7 +372,7 @@ USE `{$NAMESPACE}_role`;
 
  SET character_set_client = {$CHARSET} ;
 
-CREATE TABLE `role_triggerusage` (
+CREATE TABLE IF NOT EXISTS `role_triggerusage` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `triggerPHID` varbinary(64) NOT NULL,
   `examplePHID` varbinary(64) DEFAULT NULL,

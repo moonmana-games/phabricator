@@ -4,7 +4,7 @@ USE `{$NAMESPACE}_releeph`;
 
  SET character_set_client = {$CHARSET} ;
 
-CREATE TABLE `releeph_role` (
+CREATE TABLE IF NOT EXISTS `releeph_role` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `dateCreated` int(10) unsigned NOT NULL,
   `dateModified` int(10) unsigned NOT NULL,
