@@ -110,8 +110,9 @@ final class TimeTrackerSummaryPanel extends TimeTracker {
       $list = new PHUIStatusListView();
       
       foreach ($detailsData as $row) {
+          $iconColor = ($row['numMinutes'] > 0) ? 'green' : 'red';
           $list->addItem(id(new PHUIStatusItemView())
-              ->setIcon(PHUIStatusItemView::ICON_CLOCK, 'green', pht(''))
+              ->setIcon(PHUIStatusItemView::ICON_CLOCK, $iconColor, pht(''))
               ->setTarget(pht($row['numMinutes']))
               ->setNote(pht('tracked ' . $row['realDateWhenTracked'])));
       }

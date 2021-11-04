@@ -39,12 +39,20 @@ final class TimeTrackerMainPanel extends TimeTracker {
   }
   
   private function getTimeTrackingFormBox($user) {
+      require_celerity_resource('jquery-js');
+      require_celerity_resource('jquery-ui-js');
+      require_celerity_resource('timetracker-js');
+      require_celerity_resource('jquery-ui-css');
+      
       $submit = id(new AphrontFormSubmitControl());
       $submit->setValue(pht('Save'));
       
-      $dateFormComponent = id(new TimeTrackerSelectDateFormComponent())
-        ->setUser($user)
-        ->setLabel(pht('Date (day/month/year):'));
+      $dateFormComponent = (id(new AphrontFormTextControl())
+          ->setLabel(pht('Date:'))
+          ->setDisableAutocomplete(true)
+          ->setName('date')
+          ->setValue('')
+          ->setID('datepicker'));
       
       $form = id(new AphrontFormView())
         ->setUser($this->getRequest()->getUser())
@@ -57,7 +65,7 @@ final class TimeTrackerMainPanel extends TimeTracker {
         ->addHiddenInput('panelType', $this->getPanelType())
         ->appendChild($dateFormComponent)
         ->appendChild($submit);
-          
+
       $box = id(new PHUIObjectBoxView())
         ->setForm($form)
         ->setHeader('Track your working time')

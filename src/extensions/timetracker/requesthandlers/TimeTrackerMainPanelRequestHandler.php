@@ -11,13 +11,17 @@ class TimeTrackerMainPanelRequestHandler extends TimeTrackerRequestHandler {
             $correctRequest = $this->parseTrackTimeRequest($request);
         
             if (!$correctRequest) {
-                echo 'incorrect request';
+                echo 'Incorrect request';
             }
             else {
-                $day = $request->getStr('day-input');
-                $month = $request->getStr('month-input');
-                $year = $request->getStr('year-input');
-        
+                $date = $request->getStr('date');
+                $date = trim($date);
+                $pieces = explode('/', $date);
+                
+                $day = $pieces[1];
+                $month = $pieces[0];
+                $year = $pieces[2];
+                
                 $manager = new TimeTrackerStorageManager();
                 $manager->trackTime($request->getUser(), $this->numHours, $this->numMinutes, $day, $month, $year);
             }
