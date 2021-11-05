@@ -3,7 +3,7 @@
 final class TimeTrackerMainPanel extends TimeTracker {
 
   public function getName() {
-    return pht('Time tracking');
+    return pht('Hours tracking');
   }
   
   protected function getPanelType() {
@@ -35,7 +35,7 @@ final class TimeTrackerMainPanel extends TimeTracker {
               phutil_safe_html('-8h <i>(deduct 8hours, use when you made a mistake)</i>'),
           ));
       
-      return phutil_tag_div('ml', array($view, $timeTrackingFormBox));
+      return array($view, $timeTrackingFormBox);
   }
   
   private function getTimeTrackingFormBox($user) {
@@ -45,19 +45,22 @@ final class TimeTrackerMainPanel extends TimeTracker {
       require_celerity_resource('jquery-ui-css');
       
       $submit = id(new AphrontFormSubmitControl());
-      $submit->setValue(pht('Save'));
+      $submit->setValue(pht('SAVE'))
+          ->setControlStyle('width: 13%; margin-left: 3%;');
       
       $dateFormComponent = (id(new AphrontFormTextControl())
           ->setLabel(pht('Date:'))
           ->setDisableAutocomplete(true)
           ->setName('date')
-          ->setValue('')
+          ->setValue($this->getCurrentDate())
+          ->setControlStyle('width: 13%; margin-left: 3%;')
           ->setID('datepicker'));
       
       $form = id(new AphrontFormView())
         ->setUser($this->getRequest()->getUser())
         ->appendChild(id(new AphrontFormTextControl())
         ->setDisableAutocomplete(true)
+        ->setControlStyle('width: 13%; margin-left: 3%;')
         ->setLabel(pht('Time:'))
         ->setName('timeTracked')
         ->setValue(''))
@@ -68,9 +71,16 @@ final class TimeTrackerMainPanel extends TimeTracker {
 
       $box = id(new PHUIObjectBoxView())
         ->setForm($form)
-        ->setHeader('Track your working time')
+        ->setHeaderText('Track your working time')
         ->appendChild(id(new PHUIBoxView()));
       
       return $box;
+  }
+  
+  private function getCurrentDate() {
+      $currentDay = TimeTrackerTimeUtils::getCurrentDay();
+      $currentMonth = TimeTrackerTimeUtils::getCurrentMonth();
+      $currentYear = TimeTrackerTimeUtils::getCurrentYear();
+      return $currentMonth . '/' . $currentDay . '/' . $currentYear;
   }
 }

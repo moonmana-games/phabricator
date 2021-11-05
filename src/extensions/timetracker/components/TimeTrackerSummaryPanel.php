@@ -29,7 +29,7 @@ final class TimeTrackerSummaryPanel extends TimeTracker {
       if ($dayDetailsBox != null) {
           $elements[] = $dayDetailsBox;
       }
-      return phutil_tag_div('ml', $elements);
+      return $elements;
   }
   
   private function getDateRangeFormBox($user) {
@@ -39,21 +39,24 @@ final class TimeTrackerSummaryPanel extends TimeTracker {
       require_celerity_resource('jquery-ui-css');
       
       $submit = id(new AphrontFormSubmitControl());
-      $submit->setValue(pht('Go'));
+      $submit->setValue(pht('GO'))
+          ->setControlStyle('width: 13%; margin-left: 3%;');
       
       $fromDateInput = (id(new AphrontFormTextControl())
-          ->setLabel(pht('From:'))
+          ->setLabel(pht('From: '))
           ->setDisableAutocomplete(true)
           ->setName('from')
           ->setValue('')
-          ->setID('datepicker'));
+          ->setID('datepicker')
+          ->setControlStyle('width: 13%; margin-left: 3%;'));
       
       $toDateInput = (id(new AphrontFormTextControl())
-          ->setLabel(pht('To:'))
+          ->setLabel(pht('To: '))
           ->setDisableAutocomplete(true)
           ->setName('to')
           ->setValue('')
-          ->setID('datepicker2'));
+          ->setID('datepicker2')
+          ->setControlStyle('width: 13%; margin-left: 3%;'));
       
       $form = id(new AphrontFormView())
         ->setUser($this->getRequest()->getUser())
@@ -65,6 +68,7 @@ final class TimeTrackerSummaryPanel extends TimeTracker {
           
       $box = id(new PHUIObjectBoxView())
         ->setForm($form)
+        ->setHeaderText('Pick days range')
         ->appendChild(id(new PHUIBoxView()));
       
       return $box;
