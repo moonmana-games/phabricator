@@ -181,7 +181,7 @@ abstract class PhabricatorRoleController extends PhabricatorController {
       $visible_phids = array();
     }
 
-    $engine = id(new PhabricatorBoardResponseEngine())
+    $engine = id(new PhabricatorRoleBoardResponseEngine())
       ->setViewer($viewer)
       ->setBoardPHID($board_phid)
       ->setUpdatePHIDs(array($object_phid))

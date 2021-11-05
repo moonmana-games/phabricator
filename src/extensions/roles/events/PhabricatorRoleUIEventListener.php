@@ -57,7 +57,7 @@ final class PhabricatorRoleUIEventListener
 
     $annotations = array();
     if ($handles && $can_appear_on_boards) {
-      $engine = id(new PhabricatorBoardLayoutEngine())
+      $engine = id(new PhabricatorRoleBoardLayoutEngine())
         ->setViewer($user)
         ->setBoardPHIDs($role_phids)
         ->setObjectPHIDs(array($object->getPHID()))

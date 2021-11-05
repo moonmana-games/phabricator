@@ -19,7 +19,7 @@ final class PhabricatorRoleBoardManageController
 
     // Perform layout of no tasks to load and populate the columns in the
     // correct order.
-    $layout_engine = id(new PhabricatorBoardLayoutEngine())
+    $layout_engine = id(new PhabricatorRoleBoardLayoutEngine())
       ->setViewer($viewer)
       ->setBoardPHIDs(array($board->getPHID()))
       ->setObjectPHIDs(array())
@@ -47,8 +47,8 @@ final class PhabricatorRoleBoardManageController
 
     $view = id(new PHUITwoColumnView())
       ->setHeader($header)
-      ->addClass('role-view-home')
-      ->addClass('role-view-people-home')
+      ->addClass('project-view-home')
+      ->addClass('project-view-people-home')
       ->setCurtain($curtain)
       ->setMainColumn($columns_list);
 

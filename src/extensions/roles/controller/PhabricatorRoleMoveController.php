@@ -82,7 +82,7 @@ final class PhabricatorRoleMoveController
       return new Aphront404Response();
     }
 
-    $engine = id(new PhabricatorBoardLayoutEngine())
+    $engine = id(new PhabricatorRoleBoardLayoutEngine())
       ->setViewer($viewer)
       ->setBoardPHIDs(array($board_phid))
       ->setObjectPHIDs(array($object_phid))

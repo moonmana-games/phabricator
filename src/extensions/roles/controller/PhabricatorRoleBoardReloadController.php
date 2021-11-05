@@ -59,7 +59,7 @@ final class PhabricatorRoleBoardReloadController
     $update_phids = array_keys($update_objects);
     $visible_phids = array_keys($client_state);
 
-    $engine = id(new PhabricatorBoardResponseEngine())
+    $engine = id(new PhabricatorRoleBoardResponseEngine())
       ->setViewer($viewer)
       ->setBoardPHID($board_phid)
       ->setOrdering($ordering)

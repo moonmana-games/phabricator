@@ -22,7 +22,7 @@ final class PhabricatorRoleColumnViewQueryController
 
     $board_phid = $role->getPHID();
 
-    $layout_engine = id(new PhabricatorBoardLayoutEngine())
+    $layout_engine = id(new PhabricatorRoleBoardLayoutEngine())
       ->setViewer($viewer)
       ->setBoardPHIDs(array($board_phid))
       ->setFetchAllBoards(true)

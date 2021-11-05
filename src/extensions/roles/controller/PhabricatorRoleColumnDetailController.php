@@ -58,8 +58,8 @@ final class PhabricatorRoleColumnDetailController
 
     $view = id(new PHUITwoColumnView())
       ->setHeader($header)
-      ->addClass('role-view-home')
-      ->addClass('role-view-people-home')
+      ->addClass('project-view-home')
+      ->addClass('project-view-people-home')
       ->setMainColumn(array(
         $properties,
         $timeline,

@@ -103,8 +103,8 @@ final class PhabricatorRoleSubrolesController
     $view = id(new PHUITwoColumnView())
       ->setHeader($header)
       ->setCurtain($curtain)
-      ->addClass('role-view-home')
-      ->addClass('role-view-people-home')
+      ->addClass('project-view-home')
+      ->addClass('project-view-people-home')
       ->setMainColumn(array(
           $info_view,
           $subrole_list,

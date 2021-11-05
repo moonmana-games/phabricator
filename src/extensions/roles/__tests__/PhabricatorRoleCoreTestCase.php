@@ -1316,7 +1316,7 @@ final class PhabricatorRoleCoreTestCase extends PhabricatorTestCase {
     PhabricatorUser $viewer,
     PhabricatorRole $board,
     ManiphestTask $task) {
-    $engine = id(new PhabricatorBoardLayoutEngine())
+    $engine = id(new PhabricatorRoleBoardLayoutEngine())
       ->setViewer($viewer)
       ->setBoardPHIDs(array($board->getPHID()))
       ->setObjectPHIDs(
@@ -1339,7 +1339,7 @@ final class PhabricatorRoleCoreTestCase extends PhabricatorTestCase {
     PhabricatorRoleColumn $column,
     $label = null) {
 
-    $engine = id(new PhabricatorBoardLayoutEngine())
+    $engine = id(new PhabricatorRoleBoardLayoutEngine())
       ->setViewer($viewer)
       ->setBoardPHIDs(array($board->getPHID()))
       ->setObjectPHIDs($expect)

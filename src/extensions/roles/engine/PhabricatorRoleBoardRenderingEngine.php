@@ -1,6 +1,6 @@
 <?php
 
-final class PhabricatorBoardRenderingEngine extends Phobject {
+final class PhabricatorRoleBoardRenderingEngine extends Phobject {
 
   private $viewer;
   private $objects;

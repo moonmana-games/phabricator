@@ -100,7 +100,7 @@ final class PhabricatorRoleColumnBulkMoveController
     if ($dst_role) {
       $same_role = ($src_role->getID() === $dst_role->getID());
 
-      $layout_engine = id(new PhabricatorBoardLayoutEngine())
+      $layout_engine = id(new PhabricatorRoleBoardLayoutEngine())
         ->setViewer($viewer)
         ->setBoardPHIDs(array($dst_role->getPHID()))
         ->setFetchAllBoards(true)

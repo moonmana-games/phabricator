@@ -31,7 +31,7 @@ final class PhabricatorRolesCurtainExtension
 
     $annotations = array();
     if ($has_roles && $can_appear_on_boards) {
-      $engine = id(new PhabricatorBoardLayoutEngine())
+      $engine = id(new PhabricatorRoleBoardLayoutEngine())
         ->setViewer($viewer)
         ->setBoardPHIDs($role_phids)
         ->setObjectPHIDs(array($object->getPHID()))

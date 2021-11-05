@@ -27,7 +27,7 @@ final class PhabricatorBoardColumnsSearchEngineAttachment
 
     $role_phids = $edge_query->getDestinationPHIDs();
 
-    $engine = id(new PhabricatorBoardLayoutEngine())
+    $engine = id(new PhabricatorRoleBoardLayoutEngine())
       ->setViewer($viewer)
       ->setBoardPHIDs($role_phids)
       ->setObjectPHIDs($object_phids)

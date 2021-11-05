@@ -116,7 +116,7 @@ final class RoleBoardTaskCard extends Phobject {
         id(new PHUIListItemView())
           ->setName(pht('Edit'))
           ->setIcon($edit_icon)
-          ->addSigil('edit-role-card')
+          ->addSigil('edit-project-card')
           ->setHref('/maniphest/task/edit/'.$task->getID().'/'));
     }
 

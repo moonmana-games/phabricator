@@ -30,10 +30,10 @@ final class PhabricatorRoleCardView extends AphrontTagView {
 
   protected function getTagAttributes() {
     $classes = array();
-    $classes[] = 'role-card-view';
+    $classes[] = 'project-card-view';
 
     $color = $this->role->getColor();
-    $classes[] = 'role-card-'.$color;
+    $classes[] = 'project-card-'.$color;
 
     return array(
       'class' => implode(' ', $classes),
@@ -44,14 +44,14 @@ final class PhabricatorRoleCardView extends AphrontTagView {
 
     $role = $this->role;
     $viewer = $this->viewer;
-    require_celerity_resource('role-card-view-css');
+    require_celerity_resource('project-card-view-css');
 
     $icon = $role->getDisplayIconIcon();
     $icon_name = $role->getDisplayIconName();
     $tag = id(new PHUITagView())
       ->setIcon($icon)
       ->setName($icon_name)
-      ->addClass('role-view-header-tag')
+      ->addClass('project-view-header-tag')
       ->setType(PHUITagView::TYPE_SHADE);
 
     $header = id(new PHUIHeaderView())
@@ -71,7 +71,7 @@ final class PhabricatorRoleCardView extends AphrontTagView {
     $card = phutil_tag(
       'div',
       array(
-        'class' => 'role-card-inner',
+        'class' => 'project-card-inner',
       ),
       array(
         $header,

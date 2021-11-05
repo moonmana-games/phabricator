@@ -1,6 +1,6 @@
 <?php
 
-final class PhabricatorBoardResponseEngine extends Phobject {
+final class PhabricatorRoleBoardResponseEngine extends Phobject {
 
   private $viewer;
   private $objects;
@@ -107,7 +107,7 @@ final class PhabricatorBoardResponseEngine extends Phobject {
     $all_objects = msort($all_objects, 'getID');
     $ordered_phids = mpull($all_objects, 'getPHID');
 
-    $layout_engine = id(new PhabricatorBoardLayoutEngine())
+    $layout_engine = id(new PhabricatorRoleBoardLayoutEngine())
       ->setViewer($viewer)
       ->setBoardPHIDs(array($board_phid))
       ->setObjectPHIDs($ordered_phids)
@@ -257,7 +257,7 @@ final class PhabricatorBoardResponseEngine extends Phobject {
 
     $excluded_phids = $this->loadExcludedRolePHIDs();
 
-    $rendering_engine = id(new PhabricatorBoardRenderingEngine())
+    $rendering_engine = id(new PhabricatorRoleBoardRenderingEngine())
       ->setViewer($viewer)
       ->setObjects($objects)
       ->setExcludedRolePHIDs($excluded_phids);

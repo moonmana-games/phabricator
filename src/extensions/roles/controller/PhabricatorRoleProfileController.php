@@ -22,7 +22,7 @@ final class PhabricatorRoleProfileController
     $tag = id(new PHUITagView())
       ->setIcon($icon)
       ->setName($icon_name)
-      ->addClass('role-view-header-tag')
+      ->addClass('project-view-header-tag')
       ->setType(PHUITagView::TYPE_SHADE);
 
     $header = id(new PHUIHeaderView())
@@ -117,7 +117,7 @@ final class PhabricatorRoleProfileController
     $feed = $this->renderStories($stories);
     $feed = id(new PHUIObjectBoxView())
       ->setHeader($feed_header)
-      ->addClass('role-view-feed')
+      ->addClass('project-view-feed')
       ->appendChild(
         array(
           $overheated_view,
@@ -128,8 +128,8 @@ final class PhabricatorRoleProfileController
 
     $home = id(new PHUITwoColumnView())
       ->setHeader($header)
-      ->addClass('role-view-home')
-      ->addClass('role-view-people-home')
+      ->addClass('project-view-home')
+      ->addClass('project-view-people-home')
       ->setMainColumn(
         array(
           $properties,
@@ -179,7 +179,7 @@ final class PhabricatorRoleProfileController
       ->setHeader($header)
       ->appendChild($view)
       ->setBackground(PHUIObjectBoxView::BLUE_PROPERTY)
-      ->addClass('role-view-properties');
+      ->addClass('project-view-properties');
 
     return $view;
   }

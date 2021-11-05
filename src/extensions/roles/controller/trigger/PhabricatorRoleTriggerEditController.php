@@ -281,7 +281,7 @@ final class PhabricatorRoleTriggerEditController
     $type_list = mpull($type_list, 'newTemplate');
     $type_list = array_values($type_list);
 
-    require_celerity_resource('role-triggers-css');
+    require_celerity_resource('project-triggers-css');
 
     Javelin::initBehavior(
       'trigger-rule-editor',

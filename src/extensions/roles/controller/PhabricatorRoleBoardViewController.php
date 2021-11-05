@@ -139,7 +139,7 @@ final class PhabricatorRoleBoardViewController
 
     $container_phids = $state->getBoardContainerPHIDs();
 
-    $rendering_engine = id(new PhabricatorBoardRenderingEngine())
+    $rendering_engine = id(new PhabricatorRoleBoardRenderingEngine())
       ->setViewer($viewer)
       ->setObjects(array_select_keys($tasks, $visible_phids))
       ->setEditMap($task_can_edit_map)
@@ -279,7 +279,7 @@ final class PhabricatorRoleBoardViewController
     $properties = array();
     foreach ($all_tasks as $task) {
       $properties[$task->getPHID()] =
-        PhabricatorBoardResponseEngine::newTaskProperties($task);
+        PhabricatorRoleBoardResponseEngine::newTaskProperties($task);
     }
 
     $behavior_config = array(

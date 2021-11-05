@@ -232,7 +232,7 @@ final class PhabricatorRoleWorkboardViewState
     // so layout is consistent.
     $objects = msort($objects, 'getID');
 
-    $layout_engine = id(new PhabricatorBoardLayoutEngine())
+    $layout_engine = id(new PhabricatorRoleBoardLayoutEngine())
       ->setViewer($viewer)
       ->setObjectPHIDs(array_keys($objects))
       ->setBoardPHIDs(array($board_phid))
