@@ -4,6 +4,7 @@ class TimeTrackerMainPanelRequestHandler extends TimeTrackerRequestHandler {
 
     private $numMinutes = 0;
     private $numHours = 0;
+    private $responsePanel = null;
     
     public function handleRequest($request) {
         $isSent = $request->getStr('isSent') == '1';
@@ -11,7 +12,7 @@ class TimeTrackerMainPanelRequestHandler extends TimeTrackerRequestHandler {
             $correctRequest = $this->parseTrackTimeRequest($request);
         
             if (!$correctRequest) {
-                echo 'Incorrect request';
+                $this->responsePanel = $this->createResponsePanel(false);
             }
             else {
                 $date = $request->getStr('date');
@@ -24,6 +25,8 @@ class TimeTrackerMainPanelRequestHandler extends TimeTrackerRequestHandler {
                 
                 $manager = new TimeTrackerStorageManager();
                 $manager->trackTime($request->getUser(), $this->numHours, $this->numMinutes, $day, $month, $year);
+                
+                $this->responsePanel = $this->createResponsePanel(true);
             }
         }
     }
@@ -43,6 +46,10 @@ class TimeTrackerMainPanelRequestHandler extends TimeTrackerRequestHandler {
         $isNegative = strcmp(substr($timeTracked, 0, 1), '-') == 0;
         $isRange = (strpos($timeTracked, '-') !== false) && !$isNegative;
         
+        if (!$hasMinutes && !$hasHours && !$isRange) {
+            return false;
+        }
+        
         $correctInput = true;
         if ($isRange) {
             $correctInput = $this->parseRange($timeTracked);
@@ -54,7 +61,7 @@ class TimeTrackerMainPanelRequestHandler extends TimeTrackerRequestHandler {
         $numMinutesToTrack = $this->numMinutes + $this->numHours * 60;
         $numMinutesAlreadyTrackedToday = TimeTrackerStorageManager::getNumMinutesTrackedToday($request->getUser());
         
-        if ($numMinutesAlreadyTrackedToday + $numMinutesToTrack < 0) {
+        if ($numMinutesAlreadyTrackedToday + $numMinutesToTrack < 0 || $numMinutesToTrack == 0) {
             $correctInput = false;
         }
         
@@ -103,11 +110,29 @@ class TimeTrackerMainPanelRequestHandler extends TimeTrackerRequestHandler {
         return true;
     }
     
-    public function getNumMinutes() {
-        return $this->numMinutes;
+    private function createResponsePanel($success) {
+        $severity = $success ? PHUIInfoView::SEVERITY_SUCCESS : PHUIInfoView::SEVERITY_ERROR;
+        $responseText = '';
+        if ($success) {
+            $responseText = 'Successfully tracked';
+            if ($this->numHours != 0) {
+                $responseText .= ' ' . $this->numHours . ' hours';
+            }
+            if ($this->numMinutes != 0) {
+                $responseText .= ' ' . $this->numMinutes . ' minutes';
+            }
+        }
+        else {
+            $responseText = 'Incorrect input';
+        }
+        
+        $view = new PHUIInfoView();
+        $view->setSeverity($severity);
+        $view->setErrors(array(pht($responseText)));
+        return $view;
     }
     
-    public function getNumHours() {
-        return $this->numHours;
+    public function getResponsePanel() {
+        return $this->responsePanel;
     }
 }

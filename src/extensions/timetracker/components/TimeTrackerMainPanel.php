@@ -34,8 +34,25 @@ final class TimeTrackerMainPanel extends TimeTracker {
               phutil_safe_html('22-2 <i>(range, from 22-2 there will be 4hour tracked)</i>'),
               phutil_safe_html('-8h <i>(deduct 8hours, use when you made a mistake)</i>'),
           ));
+      $arr = array($view, $timeTrackingFormBox);
       
-      return array($view, $timeTrackingFormBox);
+      $responseBox = $this->getResponseBox();
+      if ($responseBox != null) {
+          $arr[] = $responseBox;
+          
+          $date = $this->getRequest()->getStr('date');
+          $pieces = explode('/', $date);
+          
+          $day = $pieces[1];
+          $month = $pieces[0];
+          $year = $pieces[2];
+          
+          $timestamp = TimeTrackerTimeUtils::getTimestamp($day, $month, $year);
+          $dayHistoryDetails = new TimeTrackerDayHistoryDetailsBox($user->getID(), $timestamp);
+          $box = $dayHistoryDetails->getDetailsBox();
+          $arr[] = $box;
+      }
+      return $arr;
   }
   
   private function getTimeTrackingFormBox($user) {
@@ -82,5 +99,13 @@ final class TimeTrackerMainPanel extends TimeTracker {
       $currentMonth = TimeTrackerTimeUtils::getCurrentMonth();
       $currentYear = TimeTrackerTimeUtils::getCurrentYear();
       return $currentMonth . '/' . $currentDay . '/' . $currentYear;
+  }
+  
+  private function getResponseBox() {
+      $handler = $this->getRequestHandler();
+      if ($handler != null) {
+          return $handler->getResponsePanel();
+      }
+      return null;
   }
 }

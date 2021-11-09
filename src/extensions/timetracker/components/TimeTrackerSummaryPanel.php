@@ -87,12 +87,13 @@ final class TimeTrackerSummaryPanel extends TimeTracker {
       $jquery = CelerityAPI::getStaticResourceResponse()->getURI($map, 'rsrc/js/application/timetracker/chart/jquery.min.js');
       $showGraph = CelerityAPI::getStaticResourceResponse()->getURI($map, 'rsrc/js/application/timetracker/chart/show-graph.js');
       
-      $content = phutil_safe_html(pht('<div id="chart-container">
+      $widthPercentage = '65%';
+      $content = phutil_safe_html(pht('<div style="width: %s;" id="chart-container">
         <canvas id="graphCanvas"></canvas></div>
         <script type=text/javascript src="%s"></script>
         <script type=text/javascript src="%s"></script>
         <script type=text/javascript src="%s"></script>
-        <script type=text/javascript>showGraph(%s);</script>', $jquery, $chart, $showGraph, $chartJsonData));
+        <script type=text/javascript>showGraph(%s);</script>', $widthPercentage, $jquery, $chart, $showGraph, $chartJsonData));
       
       $box = id(new PHUIObjectBoxView())
         ->setHeader('Title')
@@ -108,24 +109,7 @@ final class TimeTrackerSummaryPanel extends TimeTracker {
           return null;
       }
       
-      $detailsData = $requestHandler->getDetailsData();
-      $totalTrackedTime = $requestHandler->getTotalTrackedTime();
-      
-      $list = new PHUIStatusListView();
-      
-      foreach ($detailsData as $row) {
-          $iconColor = ($row['numMinutes'] > 0) ? 'green' : 'red';
-          $list->addItem(id(new PHUIStatusItemView())
-              ->setIcon(PHUIStatusItemView::ICON_CLOCK, $iconColor, pht(''))
-              ->setTarget(pht($row['numMinutes']))
-              ->setNote(pht('tracked ' . $row['realDateWhenTracked'])));
-      }
-      
-      $day = $_GET['day'];
-      $box = id(new PHUIObjectBoxView())
-          ->setHeaderText('Tracked time history for ' . $day)
-          ->appendChild($list);
-                    
+      $box = $requestHandler->getDayDetailsBox();
       return $box;
   }
 }
