@@ -7,8 +7,15 @@ class TimeTrackerSummaryPanelRequestHandler extends TimeTrackerRequestHandler {
     public function handleRequest($request) {
         $isSent = $request->getStr('isSent') == '1';
         if ($isSent) {
-            $fromTimestamp = $this->getTimestampFromInput($request->getStr('from'));
-            $toTimestamp = $this->getTimestampFromInput($request->getStr('to'));
+            $from = $request->getStr('from');
+            $to = $request->getStr('to');
+            
+            if ($to == '') {
+                $to = $from;
+            }
+            
+            $fromTimestamp = $this->getTimestampFromInput($from);
+            $toTimestamp = $this->getTimestampFromInput($to);
             $userID = $request->getUser()->getID();
             
             $dao = new TimeTrackerDAO();
