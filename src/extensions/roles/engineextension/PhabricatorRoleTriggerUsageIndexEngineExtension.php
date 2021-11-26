@@ -3,10 +3,10 @@
 final class PhabricatorRoleTriggerUsageIndexEngineExtension
   extends PhabricatorIndexEngineExtension {
 
-  const EXTENSIONKEY = 'trigger.usage';
+  const EXTENSIONKEY = 'trigger.usage.role';
 
   public function getExtensionName() {
-    return pht('Trigger Usage');
+    return pht('Trigger Usage Role');
   }
 
   public function shouldIndexObject($object) {
