@@ -69,7 +69,7 @@ final class TimeTrackerMainPanel extends TimeTracker {
           ->setLabel(pht('Date:'))
           ->setDisableAutocomplete(true)
           ->setName('date')
-          ->setValue($this->getCurrentDate())
+          ->setValue($this->getPrefilledDate())
           ->setControlStyle('width: 13%; margin-left: 3%;')
           ->setID('datepicker'));
       
@@ -107,5 +107,13 @@ final class TimeTrackerMainPanel extends TimeTracker {
           return $handler->getResponsePanel();
       }
       return null;
+  }
+  
+  private function getPrefilledDate() {
+      $handler = $this->getRequestHandler();
+      if ($handler != null) {
+          return $handler->getRequest()->getStr('date');
+      }
+      return $this->getCurrentDate();
   }
 }

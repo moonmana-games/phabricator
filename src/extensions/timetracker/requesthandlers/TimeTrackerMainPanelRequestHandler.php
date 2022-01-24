@@ -5,8 +5,11 @@ class TimeTrackerMainPanelRequestHandler extends TimeTrackerRequestHandler {
     private $numMinutes = 0;
     private $numHours = 0;
     private $responsePanel = null;
+    private $request = null;
     
     public function handleRequest($request) {
+        $this->request = $request;
+        
         $isSent = $request->getStr('isSent') == '1';
         if ($isSent) {
             $correctRequest = $this->parseTrackTimeRequest($request);
@@ -134,5 +137,9 @@ class TimeTrackerMainPanelRequestHandler extends TimeTrackerRequestHandler {
     
     public function getResponsePanel() {
         return $this->responsePanel;
+    }
+    
+    public function getRequest() {
+        return $this->request;
     }
 }
