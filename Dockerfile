@@ -1,5 +1,5 @@
 ##### Start Phabricator
-FROM php:7.3-apache-buster
+FROM php:7.4-apache-buster
 ##### End Phabricator
 
 LABEL org.opencontainers.image.source https://github.com/moonmana-games/phabricator
@@ -39,12 +39,12 @@ RUN set -ex; \
       libpng-dev \
       libfreetype6-dev \
       libzip-dev \
+      libonig-dev \
     ; \
     \
   docker-php-ext-configure gd \
-        --with-jpeg-dir=/usr \
-        --with-png-dir=/usr \
-    --with-freetype-dir=/usr \
+    --with-jpeg=/usr \
+    --with-freetype=/usr \
   ; \
   \
     docker-php-ext-install -j "$(nproc)" \
