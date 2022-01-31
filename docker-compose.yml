@@ -23,7 +23,7 @@ services:
     links:
       - database
   database:
-    image: mariadb:10.2
+    image: mariadb:10.5
     volumes:
        - db-data:/var/lib/mysql
     ports:
