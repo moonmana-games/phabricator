@@ -52,6 +52,7 @@ final class TimeTrackerMainPanel extends TimeTracker {
           $box = $dayHistoryDetails->getDetailsBox();
           $arr[] = $box;
       }
+      $arr[] = $this->getSummaryHoursBox($user);
       return $arr;
   }
   
@@ -92,6 +93,12 @@ final class TimeTrackerMainPanel extends TimeTracker {
         ->appendChild(id(new PHUIBoxView()));
       
       return $box;
+  }
+  
+  private function getSummaryHoursBox($user) {
+      
+      $summaryBox = new TimeTrackerMonthSummaryBox($user);
+      return $summaryBox->getBox();
   }
   
   private function getCurrentDate() {
