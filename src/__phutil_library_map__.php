@@ -5290,6 +5290,8 @@ phutil_register_library_map(array(
     'TimeTrackerRenderController' => 'extensions/timetracker/controller/TimeTrackerRenderController.php',
     'TimeTrackerApplication' => 'extensions/timetracker/application/TimeTrackerApplication.php',
     'TimeTrackerRequestHandler' => 'extensions/timetracker/requesthandlers/TimeTrackerRequestHandler.php',
+    'VacationApplication' => 'extensions/vacation/application/VacationApplication.php',
+    'VacationRenderController' => 'extensions/vacation/controller/VacationRenderController.php',
     'PhabricatorURIExportField' => 'infrastructure/export/field/PhabricatorURIExportField.php',
     'PhabricatorUSEnglishTranslation' => 'infrastructure/internationalization/translation/PhabricatorUSEnglishTranslation.php',
     'PhabricatorUnifiedDiffsSetting' => 'applications/settings/setting/PhabricatorUnifiedDiffsSetting.php',
