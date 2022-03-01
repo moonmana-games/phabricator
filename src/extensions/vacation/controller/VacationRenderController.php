@@ -67,6 +67,14 @@ final class VacationRenderController extends PhabricatorController {
   }
   
   private function getRequestHandler($request) {
+      $panelType = $request->getStr('formType');
+      
+      if (strcmp($panelType, VacationFormType::SPEND_HOURS) == 0) {
+          return new VacationSpendHoursRequestHandler();
+      }
+      if (strcmp($panelType, VacationFormType::REVERT_SPEND_HOURS) == 0) {
+          return new VacationRevertSpendHoursRequestHandler();
+      }
       return null;
   }
 }

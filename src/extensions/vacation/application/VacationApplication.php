@@ -41,6 +41,12 @@ final class VacationApplication extends PhabricatorApplication {
   public function getApplicationOrder() {
     return 0.1;
   }
+  
+  public function getEventListeners() {
+      return array(
+          new VacationEventListener(),
+      );
+  }
 
   public function getRoutes() {
     return array(

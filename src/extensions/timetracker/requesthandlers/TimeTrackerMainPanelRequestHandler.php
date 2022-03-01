@@ -30,8 +30,25 @@ class TimeTrackerMainPanelRequestHandler extends TimeTrackerRequestHandler {
                 $manager->trackTime($request->getUser(), $this->numHours, $this->numMinutes, $day, $month, $year);
                 
                 $this->responsePanel = $this->createResponsePanel(true);
+                
+                $numHoursTracked = $this->numHours + $this->numMinutes / 60;
+                $whenTrackedTimestamp = TimeTrackerTimeUtils::getTimestamp($day, $month, $year);
+                $this->dispatchEvent($numHoursTracked, $whenTrackedTimestamp);
             }
         }
+    }
+    
+    private function dispatchEvent($numHoursTracked, $whenTrackedTimestamp) {
+        $eventType = PhabricatorEventType::TYPE_TIME_TRACKED;
+        $eventData = array(
+            'numHoursTracked' => $numHoursTracked,
+            'whenTrackedTimestamp' => $whenTrackedTimestamp,
+        );
+        
+        $event = id(new PhabricatorEvent($eventType, $eventData));
+        $event->setUser($this->request->getUser());
+        
+        PhutilEventEngine::dispatchEvent($event);
     }
     
     public function parseTrackTimeRequest($request) {
@@ -62,12 +79,13 @@ class TimeTrackerMainPanelRequestHandler extends TimeTrackerRequestHandler {
         }
         
         $numMinutesToTrack = $this->numMinutes + $this->numHours * 60;
-        $numMinutesAlreadyTrackedToday = TimeTrackerStorageManager::getNumMinutesTrackedToday($request->getUser());
+        $numMinutesAlreadyTrackedToday = TimeTrackerStorageManager::getNumMinutesTrackedToday($request->getUser());//here bug, someone deducts time
+        //for not today, while comparing to numMinsTrackedTODAY
         
         if ($numMinutesAlreadyTrackedToday + $numMinutesToTrack < 0 || $numMinutesToTrack == 0) {
             $correctInput = false;
         }
-        
+       
         return $correctInput;
     }
     
