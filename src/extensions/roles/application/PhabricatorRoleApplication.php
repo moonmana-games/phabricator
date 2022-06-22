@@ -15,7 +15,7 @@ final class PhabricatorRoleApplication extends PhabricatorApplication {
   }
 
   public function getBaseURI() {
-    return '/role/';
+    return '/role/query/all';
   }
 
   public function getIcon() {
