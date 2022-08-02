@@ -48,6 +48,7 @@ final class TimeTrackerMainPanel extends TimeTracker {
           $year = $pieces[2];
           
           $timestamp = TimeTrackerTimeUtils::getTimestamp($day, $month, $year);
+         // var_dump($timestamp);
           $dayHistoryDetails = new TimeTrackerDayHistoryDetailsBox($user->getID(), $timestamp);
           $box = $dayHistoryDetails->getDetailsBox();
           $arr[] = $box;
@@ -73,7 +74,7 @@ final class TimeTrackerMainPanel extends TimeTracker {
           ->setValue($this->getPrefilledDate())
           ->setControlStyle('width: 13%; margin-left: 3%;')
           ->setID('datepicker'));
-      
+
       $form = id(new AphrontFormView())
         ->setUser($this->getRequest()->getUser())
         ->appendChild(id(new AphrontFormTextControl())
@@ -85,7 +86,7 @@ final class TimeTrackerMainPanel extends TimeTracker {
         ->addHiddenInput('isSent', '1')
         ->addHiddenInput('panelType', $this->getPanelType())
         ->appendChild($dateFormComponent)
-        ->appendChild($submit);
+        ->appendChild($submit);        
 
       $box = id(new PHUIObjectBoxView())
         ->setForm($form)
@@ -94,7 +95,7 @@ final class TimeTrackerMainPanel extends TimeTracker {
       
       return $box;
   }
-  
+
   private function getSummaryHoursBox($user) {
       
       $summaryBox = new TimeTrackerMonthSummaryBox($user);

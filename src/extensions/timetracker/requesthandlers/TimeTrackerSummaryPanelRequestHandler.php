@@ -18,7 +18,7 @@ class TimeTrackerSummaryPanelRequestHandler extends TimeTrackerRequestHandler {
             $toTimestamp = $this->getTimestampFromInput($to);
             $userID = $request->getUser()->getID();
             
-            $dao = new TimeTrackerDAO();
+            $dao = new TimeTrackerTrackedTime();
             $connection = id($dao)->establishConnection('w');
             
             $result = queryfx_all(

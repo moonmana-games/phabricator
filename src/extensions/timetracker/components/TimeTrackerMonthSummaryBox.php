@@ -16,7 +16,7 @@ class TimeTrackerMonthSummaryBox {
         $lastDayOfMonth = strtotime(date('Y-m-t'));
         $today = TimeTrackerTimeUtils::getTodayTimestamp();
         
-        $dao = new TimeTrackerDAO();
+        $dao = new TimeTrackerTrackedTime();
         $connection = id($dao)->establishConnection('w');
         
         $result = queryfx_all(

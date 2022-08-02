@@ -8,7 +8,7 @@ class TimeTrackerStorageManager {
       
       $timestampWhenTrackedFor = strtotime($year . '-' . $month . '-' . $day);
       
-      $dao = new TimeTrackerDAO();
+      $dao = new TimeTrackerTrackedTime();
       $connection = id($dao)->establishConnection('w');
       $guard = AphrontWriteGuard::beginScopedUnguardedWrites();
       $dao->openTransaction();
@@ -23,9 +23,9 @@ class TimeTrackerStorageManager {
   
   public static function getNumMinutesTrackedToday($user) {
       $todayTimestamp = TimeTrackerTimeUtils::getTodayTimestamp();
-      $dao = new TimeTrackerDAO();
+      $dao = new TimeTrackerTrackedTime();
       $connection = id($dao)->establishConnection('w');
-      
+
       $rows = queryfx_all(
           $connection,
           'SELECT numMinutes FROM timetracker_trackedtime WHERE dateWhenTrackedFor = %d AND userID = %d',
@@ -38,6 +38,23 @@ class TimeTrackerStorageManager {
       }
       return $totalMinutes;
   }
+
+  public static function getNumMinutesTrackedFromDate($user, $date) {
+    $dao = new TimeTrackerTrackedTime();
+    $connection = id($dao)->establishConnection('w');
+
+    $rows = queryfx_all(
+        $connection,
+        'SELECT numMinutes FROM timetracker_trackedtime WHERE dateWhenTrackedFor = %d AND userID = %d',
+        $date,
+        $user->getID());
+    
+    $totalMinutes = 0;
+    foreach ($rows as $row) {
+        $totalMinutes += $row['numMinutes'];
+    }
+    return $totalMinutes;
+}
   
   private function getNumMinutesToTrack($numHours, $numMinutes) {
       return $numHours * 60 + $numMinutes;

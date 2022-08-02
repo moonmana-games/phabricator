@@ -53,6 +53,16 @@ class TimeTrackerMainPanelRequestHandler extends TimeTrackerRequestHandler {
             return false;
         }
         
+        $date = $request->getStr('date');
+                $date = trim($date);
+                $pieces = explode('/', $date);
+                
+                $day = $pieces[1];
+                $month = $pieces[0];
+                $year = $pieces[2];
+
+        $date = TimeTrackerTimeUtils::getTimestamp($day,$month,$year);
+
         $correctInput = true;
         if ($isRange) {
             $correctInput = $this->parseRange($timeTracked);
@@ -62,9 +72,11 @@ class TimeTrackerMainPanelRequestHandler extends TimeTrackerRequestHandler {
         }
         
         $numMinutesToTrack = $this->numMinutes + $this->numHours * 60;
-        $numMinutesAlreadyTrackedToday = TimeTrackerStorageManager::getNumMinutesTrackedToday($request->getUser());
-        
-        if ($numMinutesAlreadyTrackedToday + $numMinutesToTrack < 0 || $numMinutesToTrack == 0) {
+        $numMinutesToTrackFromDay = TimeTrackerStorageManager::getNumMinutesTrackedFromDate($request->getUser(), $date);
+
+       // $numMinutesAlreadyTrackedToday = TimeTrackerStorageManager::getNumMinutesTrackedToday($request->getUser());
+
+        if ($numMinutesToTrackFromDay + $numMinutesToTrack < 0 || $numMinutesToTrack == 0) {
             $correctInput = false;
         }
         

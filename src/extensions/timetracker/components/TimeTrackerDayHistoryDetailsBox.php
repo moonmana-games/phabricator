@@ -10,7 +10,7 @@ class TimeTrackerDayHistoryDetailsBox {
     }
     
     public function getDetailsBox() {
-        $dao = new TimeTrackerDAO();
+        $dao = new TimeTrackerTrackedTime();
         $connection = id($dao)->establishConnection('w');
         
         $result = queryfx_all(
