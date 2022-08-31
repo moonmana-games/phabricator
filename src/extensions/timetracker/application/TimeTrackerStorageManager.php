@@ -1,8 +1,10 @@
 <?php
 
+use function PHPSTORM_META\map;
+
 class TimeTrackerStorageManager {
 
-  public function trackTime($user, $numHours, $numMinutes, $day, $month, $year) {
+  public function trackTime($user, $numHours, $numMinutes, $day, $month, $year, $projectPHID) {
       $userID = $user->getID();
       $numMinutesToTrack = $this->getNumMinutesToTrack($numHours, $numMinutes);
       
@@ -14,8 +16,8 @@ class TimeTrackerStorageManager {
       $dao->openTransaction();
       
       queryfx($connection, 'INSERT INTO timetracker_trackedtime SET 
-        numMinutes = %d, realDateWhenTracked = %d, userID = %d, dateWhenTrackedFor = %d', 
-          $numMinutesToTrack, time(), $userID, $timestampWhenTrackedFor);
+        numMinutes = %d, realDateWhenTracked = %d, userID = %d, dateWhenTrackedFor = %d, projectPHID = %s', 
+          $numMinutesToTrack, time(), $userID, $timestampWhenTrackedFor, $projectPHID);
       
       $dao->saveTransaction();
       unset($guard);
@@ -39,15 +41,16 @@ class TimeTrackerStorageManager {
       return $totalMinutes;
   }
 
-  public static function getNumMinutesTrackedFromDate($user, $date) {
+  public static function getNumMinutesTrackedFromDate($user, $date, $projectPHID) {
     $dao = new TimeTrackerTrackedTime();
     $connection = id($dao)->establishConnection('w');
 
     $rows = queryfx_all(
         $connection,
-        'SELECT numMinutes FROM timetracker_trackedtime WHERE dateWhenTrackedFor = %d AND userID = %d',
+        'SELECT numMinutes FROM timetracker_trackedtime WHERE dateWhenTrackedFor = %d AND userID = %d AND projectPHID = %s',
         $date,
-        $user->getID());
+        $user->getID(),
+        $projectPHID);
     
     $totalMinutes = 0;
     foreach ($rows as $row) {
@@ -55,8 +58,20 @@ class TimeTrackerStorageManager {
     }
     return $totalMinutes;
 }
+
   
   private function getNumMinutesToTrack($numHours, $numMinutes) {
       return $numHours * 60 + $numMinutes;
+  }
+
+  public static function getNameSelectedProject($projectPHID){
+        $dao = new PhabricatorProject();
+        $connection = id($dao)->establishConnection('w');
+           
+        $projectName = queryfx_one(
+            $connection,
+            'SELECT name FROM project WHERE phid = %s', $projectPHID);
+    
+        return $projectName['name'];       
   }
 }

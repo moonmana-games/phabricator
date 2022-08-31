@@ -1,13 +1,18 @@
 <?php
 
-class TimeTrackerSummaryPanelRequestHandler extends TimeTrackerRequestHandler {
+class ManagementPanelSummaryPanelRequestHandler extends ManagementPanelRequestHandler {
 
     private $chartJsonData;
+    private $userID;
+    private $request;
     private $dateTo;
     private $dateFrom;
-
+    
     public function handleRequest($request) {
+        $this->request = $request;
+
         $isSent = $request->getStr('isSent') == '1';
+
         if ($isSent) {
             $from = $request->getStr('from');
             $to = $request->getStr('to');
@@ -15,16 +20,18 @@ class TimeTrackerSummaryPanelRequestHandler extends TimeTrackerRequestHandler {
             if ($to == '') {
                 $to = $from;
             }
-            
+
+
             $fromTimestamp = $this->getTimestampFromInput($from);
             $toTimestamp = $this->getTimestampFromInput($to);
 
             $this->dateTo = $toTimestamp;
             $this->dateFrom = $fromTimestamp;
-
-            $userID = $request->getUser()->getID();
             
-            $dao = new TimeTrackerTrackedTime();
+            $userID = $request->getStr('userID');
+            $this->userID = $userID;
+            
+            $dao =  new TimeTrackerTrackedTime();
             $connection = id($dao)->establishConnection('w');
             
             $result = queryfx_all(
@@ -44,7 +51,9 @@ class TimeTrackerSummaryPanelRequestHandler extends TimeTrackerRequestHandler {
             
             $this->chartJsonData = json_encode($data);
         }
+
     }
+
     
     private function timestampToReadableDate($data) {
         foreach ($data as &$row) {
@@ -61,11 +70,11 @@ class TimeTrackerSummaryPanelRequestHandler extends TimeTrackerRequestHandler {
     }
     
     private function fillEmptyDays($fromTimestamp, $toTimestamp, $data) {
-        $rangeOfDays = ($toTimestamp - $fromTimestamp) / TimeTrackerTimeUtils::NUM_SECONDS_IN_DAY + 1;
+        $rangeOfDays = ($toTimestamp - $fromTimestamp) / ManagementPanelTimeUtils::NUM_SECONDS_IN_DAY + 1;
         $dateWhenTrackedForColumn = array_column($data, 'dateWhenTrackedFor');
         
         for ($i = 0; $i < $rangeOfDays; $i++) {
-            $currentDayInRangeDate = $fromTimestamp + $i * TimeTrackerTimeUtils::NUM_SECONDS_IN_DAY;
+            $currentDayInRangeDate = $fromTimestamp + $i * ManagementPanelTimeUtils::NUM_SECONDS_IN_DAY;
             if (array_search($currentDayInRangeDate, $dateWhenTrackedForColumn) === false) {
                 $data[] = ['numMinutes' => '0', 'dateWhenTrackedFor' => $currentDayInRangeDate];
             }
@@ -73,10 +82,6 @@ class TimeTrackerSummaryPanelRequestHandler extends TimeTrackerRequestHandler {
         return $data;
     }
     
-    public function getChartJsonData() {
-        return $this->chartJsonData;
-    }
-
     public function getDateTo(){
         return $this->dateTo;
     }
@@ -84,7 +89,14 @@ class TimeTrackerSummaryPanelRequestHandler extends TimeTrackerRequestHandler {
     public function getDateFrom(){
         return $this->dateFrom;
     }
+
+    public function getChartJsonData() {
+        return $this->chartJsonData;
+    }
     
+    public function getSelectedUserID(){
+        return $this->userID;
+    }
     private function getTimestampFromInput($dateInput) {
         $dateInput = trim($dateInput);
         $pieces = explode('/', $dateInput);
@@ -93,6 +105,10 @@ class TimeTrackerSummaryPanelRequestHandler extends TimeTrackerRequestHandler {
         $month = $pieces[0];
         $year = $pieces[2];
         
-        return TimeTrackerTimeUtils::getTimestamp($day, $month, $year);
+        return ManagementPanelTimeUtils::getTimestamp($day, $month, $year);
+    }
+
+    public function getRequest() {
+        return $this->request;
     }
 }

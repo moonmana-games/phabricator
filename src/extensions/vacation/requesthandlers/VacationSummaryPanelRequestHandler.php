@@ -1,11 +1,9 @@
 <?php
 
-class TimeTrackerSummaryPanelRequestHandler extends TimeTrackerRequestHandler {
+class VacationSummaryPanelRequestHandler extends VacationRequestHandler {
 
     private $chartJsonData;
-    private $dateTo;
-    private $dateFrom;
-
+    
     public function handleRequest($request) {
         $isSent = $request->getStr('isSent') == '1';
         if ($isSent) {
@@ -18,18 +16,14 @@ class TimeTrackerSummaryPanelRequestHandler extends TimeTrackerRequestHandler {
             
             $fromTimestamp = $this->getTimestampFromInput($from);
             $toTimestamp = $this->getTimestampFromInput($to);
-
-            $this->dateTo = $toTimestamp;
-            $this->dateFrom = $fromTimestamp;
-
             $userID = $request->getUser()->getID();
             
-            $dao = new TimeTrackerTrackedTime();
+            $dao = new VacationVacationDay();
             $connection = id($dao)->establishConnection('w');
             
             $result = queryfx_all(
                 $connection,
-                'SELECT SUM(numMinutes) numMinutes, dateWhenTrackedFor FROM timetracker_trackedtime WHERE userID = %d 
+                'SELECT SUM(numMinutes) numMinutes, dateWhenTrackedFor FROM vacation_day WHERE userID = %d 
                  AND dateWhenTrackedFor >= %d AND dateWhenTrackedFor <= %d
                  GROUP BY dateWhenTrackedFor ORDER BY dateWhenTrackedFor ASC', $userID, $fromTimestamp, $toTimestamp);
             
@@ -61,11 +55,11 @@ class TimeTrackerSummaryPanelRequestHandler extends TimeTrackerRequestHandler {
     }
     
     private function fillEmptyDays($fromTimestamp, $toTimestamp, $data) {
-        $rangeOfDays = ($toTimestamp - $fromTimestamp) / TimeTrackerTimeUtils::NUM_SECONDS_IN_DAY + 1;
+        $rangeOfDays = ($toTimestamp - $fromTimestamp) / VacationTimeUtils::NUM_SECONDS_IN_DAY + 1;
         $dateWhenTrackedForColumn = array_column($data, 'dateWhenTrackedFor');
         
         for ($i = 0; $i < $rangeOfDays; $i++) {
-            $currentDayInRangeDate = $fromTimestamp + $i * TimeTrackerTimeUtils::NUM_SECONDS_IN_DAY;
+            $currentDayInRangeDate = $fromTimestamp + $i * VacationTimeUtils::NUM_SECONDS_IN_DAY;
             if (array_search($currentDayInRangeDate, $dateWhenTrackedForColumn) === false) {
                 $data[] = ['numMinutes' => '0', 'dateWhenTrackedFor' => $currentDayInRangeDate];
             }
@@ -76,14 +70,6 @@ class TimeTrackerSummaryPanelRequestHandler extends TimeTrackerRequestHandler {
     public function getChartJsonData() {
         return $this->chartJsonData;
     }
-
-    public function getDateTo(){
-        return $this->dateTo;
-    }
-
-    public function getDateFrom(){
-        return $this->dateFrom;
-    }
     
     private function getTimestampFromInput($dateInput) {
         $dateInput = trim($dateInput);
@@ -93,6 +79,6 @@ class TimeTrackerSummaryPanelRequestHandler extends TimeTrackerRequestHandler {
         $month = $pieces[0];
         $year = $pieces[2];
         
-        return TimeTrackerTimeUtils::getTimestamp($day, $month, $year);
+        return VacationTimeUtils::getTimestamp($day, $month, $year);
     }
 }

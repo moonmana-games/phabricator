@@ -29,7 +29,7 @@ class TimeTrackerMonthSummaryBox {
         foreach ($result as $row) {
            $totalMinutesThisMonth += $row['numMinutes'];
         }
-        
+
         $totalMinutesToday = TimeTrackerStorageManager::getNumMinutesTrackedToday($this->user);
         
         $timeTrackedThisMonth = TimeTrackerTimeUtils::numMinutesToString($totalMinutesThisMonth);

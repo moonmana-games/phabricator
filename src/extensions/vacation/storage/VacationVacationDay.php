@@ -1,5 +1,5 @@
 <?php
-final class TimeTrackerTrackedTime extends TimeTrackerDAO {
+final class VacationVacationDay extends VacationDAO {
 
   protected $id;
   protected $userID;

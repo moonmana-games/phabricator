@@ -1,6 +1,6 @@
 <?php
 
-class TimeTrackerDayHistoryDetailsBox {
+class VacationDayHistoryDetailsBox {
     private $userId;
     private $timestamp;
     
@@ -10,12 +10,12 @@ class TimeTrackerDayHistoryDetailsBox {
     }
     
     public function getDetailsBox() {
-        $dao = new TimeTrackerTrackedTime();
+        $dao = new VacationVacationDay();
         $connection = id($dao)->establishConnection('w');
         
         $result = queryfx_all(
             $connection,
-            'SELECT numMinutes, realDateWhenTracked, projectPHID FROM timetracker_trackedtime WHERE userID = %d
+            'SELECT numMinutes, realDateWhenTracked FROM vacation_day WHERE userID = %d
              AND dateWhenTrackedFor = %d ORDER BY realDateWhenTracked ASC', $this->userId, $this->timestamp);
             
         $totalTrackedTime = 0;
@@ -33,15 +33,9 @@ class TimeTrackerDayHistoryDetailsBox {
         
         foreach ($data as $row) {
             $iconColor = ($row['numMinutes'] > 0) ? 'green' : 'red';
-
-            $projectInfo = '';
-            if($row['projectPHID'] != ''){
-                $projectInfo .= " on ". TimeTrackerStorageManager::getNameSelectedProject($row['projectPHID']);
-            }
-            
             $list->addItem(id(new PHUIStatusItemView())
                 ->setIcon(PHUIStatusItemView::ICON_CLOCK, $iconColor, pht(''))
-                ->setTarget(pht($row['numMinutes'].$projectInfo))
+                ->setTarget(pht($row['numMinutes']))
                 ->setNote(pht('tracked ' . $row['realDateWhenTracked'])));
         }
         
@@ -55,6 +49,6 @@ class TimeTrackerDayHistoryDetailsBox {
     }
     
     private function numMinutesToString($numMinutes) {
-        return TimeTrackerTimeUtils::numMinutesToString($numMinutes);
+        return VacationTimeUtils::numMinutesToString($numMinutes);
     }
 }

@@ -1,21 +1,21 @@
 <?php
 
-final class TimeTrackerApplication extends PhabricatorApplication {
+final class VacationApplication extends PhabricatorApplication {
 
   public function getBaseURI() {
-    return '/timetracker/';
+    return '/vacation/';
   }
 
   public function getShortDescription() {
-    return pht('Time tracker');
+    return pht('Vacation');
   }
 
   public function getName() {
-    return pht('Time Tracker');
+    return pht('Vacation');
   }
 
   public function getIcon() {
-    return 'fa-clock-o';
+    return 'fa-glass';
   }
   
   public function isPinnedByDefault(PhabricatorUser $viewer) {
@@ -44,9 +44,9 @@ final class TimeTrackerApplication extends PhabricatorApplication {
 
   public function getRoutes() {
     return array(
-      '/timetracker/' => array(
-        '' => 'TimeTrackerRenderController',
-        'view/(?P<class>[^/]+)/' => 'TimeTrackerRenderController',
+      '/vacation/' => array(
+        '' => 'VacationRenderController',
+        'view/(?P<class>[^/]+)/' => 'VacationRenderController',
       ),
     );
   }

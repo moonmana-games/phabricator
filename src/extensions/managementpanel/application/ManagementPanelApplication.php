@@ -1,21 +1,21 @@
 <?php
 
-final class TimeTrackerApplication extends PhabricatorApplication {
+final class ManagementPanelApplication extends PhabricatorApplication {
 
   public function getBaseURI() {
-    return '/timetracker/';
+    return '/managementpanel/';
   }
 
   public function getShortDescription() {
-    return pht('Time tracker');
+    return pht('Management panel');
   }
 
   public function getName() {
-    return pht('Time Tracker');
+    return pht('Management panel');
   }
 
   public function getIcon() {
-    return 'fa-clock-o';
+    return 'fa-users';
   }
   
   public function isPinnedByDefault(PhabricatorUser $viewer) {
@@ -31,7 +31,7 @@ final class TimeTrackerApplication extends PhabricatorApplication {
   }
 
   public function getApplicationGroup() {
-    return self::GROUP_UTILITIES;
+    return self::GROUP_ADMIN;
   }
 
   public function isPrototype() {
@@ -44,9 +44,9 @@ final class TimeTrackerApplication extends PhabricatorApplication {
 
   public function getRoutes() {
     return array(
-      '/timetracker/' => array(
-        '' => 'TimeTrackerRenderController',
-        'view/(?P<class>[^/]+)/' => 'TimeTrackerRenderController',
+      '/managementpanel/' => array(
+        '' => 'ManagementPanelRenderController',
+        'view/(?P<class>[^/]+)/' => 'ManagementPanelRenderController',
       ),
     );
   }

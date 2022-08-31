@@ -1,6 +1,6 @@
 <?php
 
-final class TimeTrackerSummaryPanel extends TimeTracker {
+final class VacationSummaryPanel extends Vacation {
 
   public function getName() {
       return pht('Summary');
@@ -12,7 +12,7 @@ final class TimeTrackerSummaryPanel extends TimeTracker {
   }
   
   protected function getPanelType() {
-      return TimeTrackerPanelType::SUMMARY;
+      return VacationPanelType::SUMMARY;
   }
   
   public function renderPage($user) {
@@ -20,8 +20,7 @@ final class TimeTrackerSummaryPanel extends TimeTracker {
       $dateRangeFormBox = $this->getDateRangeFormBox($user);
       $chartBox = $this->getChartBox();
       $dayDetailsBox = $this->getDayDetailsBox();
-      $dateDetailsBox = $this->getDateDatailsBox($user);
-
+      
       $elements = array();
       $elements[] = $dateRangeFormBox;
       if ($chartBox != null) {
@@ -29,9 +28,6 @@ final class TimeTrackerSummaryPanel extends TimeTracker {
       }
       if ($dayDetailsBox != null) {
           $elements[] = $dayDetailsBox;
-      }
-      if($dateDetailsBox != null){
-        $elements[] = $dateDetailsBox;
       }
       return $elements;
   }
@@ -80,7 +76,7 @@ final class TimeTrackerSummaryPanel extends TimeTracker {
   
   private function getChartBox() {
       $requestHandler = $this->getRequestHandler();
-      if ($requestHandler == null || !($requestHandler instanceof TimeTrackerSummaryPanelRequestHandler)) {
+      if ($requestHandler == null || !($requestHandler instanceof VacationSummaryPanelRequestHandler)) {
           return null;
       }
       
@@ -106,24 +102,10 @@ final class TimeTrackerSummaryPanel extends TimeTracker {
       
       return $box;
   }
-
-  private function getDateDatailsBox($user){
-    $requestHandler = $this->getRequestHandler();
-      if ($requestHandler == null || !($requestHandler instanceof TimeTrackerSummaryPanelRequestHandler)) {
-          return null;
-      }
-
-      $form = $requestHandler->getDateFrom();
-      $to = $requestHandler->getDateTo();
-
-    $dateBox = new TimeTrackerProjectDateSummaryBox($user, $form, $to);
-    return $dateBox->getBox();
-
-  }
   
   private function getDayDetailsBox() {
       $requestHandler = $this->getRequestHandler();
-      if ($requestHandler == null || !($requestHandler instanceof TimeTrackerDayDetailsRequestHandler)) {
+      if ($requestHandler == null || !($requestHandler instanceof VacationDayDetailsRequestHandler)) {
           return null;
       }
       
