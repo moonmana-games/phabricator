@@ -60,7 +60,7 @@ class TimeTrackerStorageManager {
 }
 
   
-  private function getNumMinutesToTrack($numHours, $numMinutes) {
+  private function getNumMinutesToTrack($numHours, $numMinutes){
       return $numHours * 60 + $numMinutes;
   }
 
@@ -73,5 +73,17 @@ class TimeTrackerStorageManager {
             'SELECT name FROM project WHERE phid = %s', $projectPHID);
     
         return $projectName['name'];       
+  }
+
+  public static function getLastProjectTracked($user){
+
+    $dao = new TimeTrackerTrackedTime();
+    $connection = id($dao)->establishConnection('w');
+       
+    $projectPHID = queryfx_one(
+        $connection,
+        'SELECT projectPHID FROM timetracker_trackedtime WHERE userID = %d ORDER BY dateWhenTrackedFor DESC LIMIT 1', $user->getID());
+
+    return $projectPHID['projectPHID'];       
   }
 }

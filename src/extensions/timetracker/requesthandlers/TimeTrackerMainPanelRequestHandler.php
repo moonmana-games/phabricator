@@ -172,8 +172,8 @@ class TimeTrackerMainPanelRequestHandler extends TimeTrackerRequestHandler
     private function tryGetProject($request){
         $projectPHID = null;
         try {
-            $projectPHID = $request->getRequestData()['add_project'][0];
-
+            $arr = $request->getRequestData()['add_project'];
+            $projectPHID = end($arr);
         } catch (Exception $e) {
 
         }

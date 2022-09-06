@@ -53,7 +53,7 @@
       }
 
       if($userSetter != null && $userSetter->getID() != -1){
-       // var_dump("User find");
+
         $arr[] = $this->getUserName($this->userID);  // TODO added needed userID
         $arr[] = $this->getSummaryHoursBox($userSetter); 
         $arr[] = $this->getFormEditVacationTime($user); 

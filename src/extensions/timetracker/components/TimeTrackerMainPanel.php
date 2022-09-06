@@ -65,6 +65,8 @@ final class TimeTrackerMainPanel extends TimeTracker {
       require_celerity_resource('timetracker-js');
       require_celerity_resource('jquery-ui-css');
       
+      $arrProjects = $this->tryGetLastProjectName($user);
+
       $submit = id(new AphrontFormSubmitControl());
       $submit->setValue(pht('SAVE'))
           ->setControlStyle('width: 13%; margin-left: 3%;');
@@ -96,6 +98,7 @@ final class TimeTrackerMainPanel extends TimeTracker {
               ->setLabel('Project:')
               ->setLimit(1)
               ->setControlStyle('width: 30%; margin-left: -0.4%;')
+              ->setValue($arrProjects)
               ->setDatasource(new PhabricatorProjectDatasource()))
         ->appendChild($dateFormComponent)
         ->appendChild($submit);        
@@ -133,6 +136,17 @@ final class TimeTrackerMainPanel extends TimeTracker {
           return $handler->getResponsePanel();
       }
       return null;
+  }
+  private function tryGetLastProjectName($user){
+
+    $lastProjectName = TimeTrackerStorageManager::getLastProjectTracked($user);
+
+    if($lastProjectName == ""){
+        return null;
+    }else{
+        $arrProjects = array($lastProjectName);
+    }
+    return  $arrProjects;
   }
   
   private function getPrefilledDate() {
