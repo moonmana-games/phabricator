@@ -2,7 +2,7 @@
 
 class VacationTimeUtils {
     
-    const NUM_SECONDS_IN_DAY = 60 * 60 * 24;
+    const NUM_SECONDS_IN_DAY = 86400;
     const NUM_YEARS_FOR_BONUS = 6;
     const COEF_BASE_VACATION = 11;
     const COEF_BONUS_VACATION = 9.57;

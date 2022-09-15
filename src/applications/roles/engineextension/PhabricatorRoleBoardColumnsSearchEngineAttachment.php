@@ -1,6 +1,6 @@
 <?php
 
-final class PhabricatorBoardColumnsSearchEngineAttachment
+final class PhabricatorRoleBoardColumnsSearchEngineAttachment
   extends PhabricatorSearchEngineAttachment {
 
   public function getAttachmentName() {

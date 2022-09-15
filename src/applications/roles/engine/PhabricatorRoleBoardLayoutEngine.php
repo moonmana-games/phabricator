@@ -302,7 +302,7 @@ final class PhabricatorRoleBoardLayoutEngine extends Phobject {
     $boards = mpull($boards, null, 'getPHID');
 
     foreach ($boards as $key => $board) {
-      if (!($board instanceof PhabricatorWorkboardInterface)) {
+      if (!($board instanceof PhabricatorRoleWorkboardInterface)) {
         unset($boards[$key]);
       }
     }

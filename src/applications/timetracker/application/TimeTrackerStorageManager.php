@@ -1,7 +1,5 @@
 <?php
 
-use function PHPSTORM_META\map;
-
 class TimeTrackerStorageManager {
 
   public function trackTime($user, $numHours, $numMinutes, $day, $month, $year, $projectPHID) {

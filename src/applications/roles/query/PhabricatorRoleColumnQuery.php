@@ -117,7 +117,7 @@ final class PhabricatorRoleColumnQuery
 
         // Only attach valid proxies, so we don't end up getting surprised if
         // an install somehow gets junk into their database.
-        if (!($proxy instanceof PhabricatorColumnProxyInterface)) {
+        if (!($proxy instanceof PhabricatorRoleColumnProxyInterface)) {
           $proxy = null;
         }
 

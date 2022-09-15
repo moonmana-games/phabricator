@@ -11,10 +11,10 @@ final class PhabricatorRole extends PhabricatorRoleDAO
     PhabricatorFulltextInterface,
     PhabricatorFerretInterface,
     PhabricatorConduitResultInterface,
-    PhabricatorColumnProxyInterface,
+    PhabricatorRoleColumnProxyInterface,
     PhabricatorSpacesInterface,
     PhabricatorEditEngineSubtypeInterface,
-    PhabricatorWorkboardInterface {
+    PhabricatorRoleWorkboardInterface {
 
   protected $name;
   protected $status = PhabricatorRoleStatus::STATUS_ACTIVE;
@@ -872,10 +872,10 @@ final class PhabricatorRole extends PhabricatorRoleDAO
   }
 
 
-/* -(  PhabricatorColumnProxyInterface  )------------------------------------ */
+/* -(  PhabricatorRoleColumnProxyInterface  )------------------------------------ */
 
 
-  public function getProxyColumnName() {
+  public function getProxyRoleColumnName() {
     return $this->getName();
   }
 

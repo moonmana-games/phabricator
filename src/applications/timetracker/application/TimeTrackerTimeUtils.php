@@ -1,8 +1,8 @@
 <?php
 
-class ManagementPanelTimeUtils {
+class TimeTrackerTimeUtils {
     
-    const NUM_SECONDS_IN_DAY = 60 * 60 * 24;
+    const NUM_SECONDS_IN_DAY = 86400;
     
     public static function getCurrentYear() {
         $date = new DateTime('@' . time());
@@ -20,11 +20,11 @@ class ManagementPanelTimeUtils {
     }
     
     public static function getTodayTimestamp() {
-        $currentDay = ManagementPanelTimeUtils::getCurrentDay();
-        $currentMonth = ManagementPanelTimeUtils::getCurrentMonth();
-        $currentYear = ManagementPanelTimeUtils::getCurrentYear();
+        $currentDay = TimeTrackerTimeUtils::getCurrentDay();
+        $currentMonth = TimeTrackerTimeUtils::getCurrentMonth();
+        $currentYear = TimeTrackerTimeUtils::getCurrentYear();
         
-        return ManagementPanelTimeUtils::getTimestamp($currentDay, $currentMonth, $currentYear);
+        return TimeTrackerTimeUtils::getTimestamp($currentDay, $currentMonth, $currentYear);
     }
     
     public static function getTimestamp($day, $month, $year) {
