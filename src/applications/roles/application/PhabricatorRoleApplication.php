@@ -15,7 +15,7 @@ final class PhabricatorRoleApplication extends PhabricatorApplication {
   }
 
   public function getBaseURI() {
-    return '/role/query/all';
+    return '/role/';
   }
 
   public function getIcon() {
@@ -123,10 +123,6 @@ final class PhabricatorRoleApplication extends PhabricatorApplication {
           => 'PhabricatorRoleSilenceController',
         'warning/(?P<id>[1-9]\d*)/'
           => 'PhabricatorRoleSubroleWarningController',
-      ),
-      '/tag/' => array(
-        '(?P<slug>[^/]+)/' => 'PhabricatorRoleViewController',
-        '(?P<slug>[^/]+)/board/' => 'PhabricatorRoleBoardViewController',
       ),
     );
   }
