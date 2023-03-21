@@ -201,8 +201,7 @@ JX.install('Chart', {
             var y = parseInt(d.y1);
 
             var view =
-              d_y + '-' + d_m + '-' + d_d + '<br /><b>' + y + '</b>' +
-              label;
+              d_y + '-' + d_m + '-' + d_d + '<br /><b>' + y + '</b>';
 
             div
               .html(view)
