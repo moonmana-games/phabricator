@@ -119,6 +119,7 @@ RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm; \
 ##### End Aphlict
 
 # Clone phabricator
+COPY ./ /opt/phabricator
 RUN git clone https://github.com/phacility/arcanist /opt/arcanist
 
 WORKDIR /opt/phabricator

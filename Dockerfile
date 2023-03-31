@@ -113,6 +113,7 @@ RUN { \
 ##### End Phabricator
 
 # Clone phabricator
+COPY ./ /opt/phabricator
 RUN git clone https://github.com/phacility/arcanist /opt/arcanist
 
 WORKDIR /opt/phabricator

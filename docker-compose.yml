@@ -6,7 +6,6 @@ services:
     volumes:
        - config:/opt/phabricator/conf/local
        - repo:/var/repo
-       - .:/opt/phabricator
     ports:
        - 8888:80
     links:
@@ -19,24 +18,14 @@ services:
     volumes:
        - config:/opt/phabricator/conf/local
        - repo:/var/repo
-       - .:/opt/phabricator
     links:
       - database
   database:
     image: mariadb:10.5
     volumes:
        - db-data:/var/lib/mysql
-    ports:
-      - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: CHANGEME
-  phpmyadmin:
-    image: phpmyadmin
-    restart: always
-    ports:
-      - 8080:80
-    environment:
-      - PMA_ARBITRARY=1
 volumes:
   config:
   repo:
