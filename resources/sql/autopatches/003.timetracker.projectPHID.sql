@@ -7,4 +7,4 @@ USE `{$NAMESPACE}_timetracker`;
  SET character_set_client = {$CHARSET} ;
 
 ALTER TABLE {$NAMESPACE}_timetracker.timetracker_trackedtime
-  ADD `projectPHID` varbinary(64) NOT NULL;
+  ADD IF NOT EXISTS `projectPHID` varbinary(64) NOT NULL;
