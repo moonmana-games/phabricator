@@ -102,13 +102,15 @@ RUN { \
 
 # Repository Folder.
 RUN mkdir /var/repo \
-  && chown www-data:www-data /var/repo
+  && chown www-data:www-data /var/repo \
+  && chown www-data:www-data /var/data
 
 ##### Start Phabricator
 RUN { \
         echo '<VirtualHost *:80>'; \
         echo '  RewriteEngine on'; \
         echo '  RewriteRule ^(.*)$ /index.php?__path__=$1 [B,L,QSA]'; \
+        echo '  LimitRequestBody 33554432'; \
         echo '</VirtualHost>'; \
     } > /etc/apache2/sites-available/000-default.conf
 ##### End Phabricator
