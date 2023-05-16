@@ -102,7 +102,10 @@ RUN { \
 
 # Repository Folder.
 RUN mkdir /var/repo \
-  && chown www-data:www-data /var/repo \
+  && chown www-data:www-data /var/repo
+
+# Data Folder.
+RUN mkdir /var/data \
   && chown www-data:www-data /var/data
 
 ##### Start Phabricator
