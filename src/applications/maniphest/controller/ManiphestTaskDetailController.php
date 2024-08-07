@@ -313,12 +313,21 @@ final class ManiphestTaskDetailController extends ManiphestController {
       ->setDisabled(!$subtask_options)
       ->setWorkflow($subtask_workflow);
 
+    $blocker_task_item = id(new PhabricatorActionView())
+      ->setName(pht('Create Blocker Task'))
+      ->setHref($subtask_uri)
+      ->setIcon('fa-level-down')
+      ->setDisabled(!$subtask_options)
+      ->setWorkflow($subtask_workflow);
+
     $relationship_list = PhabricatorObjectRelationshipList::newForObject(
       $viewer,
       $task);
 
     $submenu_actions = array(
       $subtask_item,
+      $blocker_task_item,
+      ManiphestTaskHasBlockedRelationship::RELATIONSHIPKEY,
       ManiphestTaskHasParentRelationship::RELATIONSHIPKEY,
       ManiphestTaskHasSubtaskRelationship::RELATIONSHIPKEY,
       ManiphestTaskMergeInRelationship::RELATIONSHIPKEY,
