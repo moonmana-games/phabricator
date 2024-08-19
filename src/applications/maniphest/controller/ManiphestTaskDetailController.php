@@ -301,11 +301,14 @@ final class ManiphestTaskDetailController extends ManiphestController {
         ->replaceQueryParam('parent', $id)
         ->replaceQueryParam('template', $id)
         ->replaceQueryParam('status', ManiphestTaskStatus::getDefaultStatus());
+      $blocker_task_uri = id(new PhutilURI("/task/edit/form/{$form_key}/"))
+        ->replaceQueryParam('blocked', $id)
+        ->replaceQueryParam('template', $id)
+        ->replaceQueryParam('status', ManiphestTaskStatus::getDefaultStatus());
       $subtask_workflow = false;
     }
 
     $subtask_uri = $this->getApplicationURI($subtask_uri);
-
     $subtask_item = id(new PhabricatorActionView())
       ->setName(pht('Create Subtask'))
       ->setHref($subtask_uri)
@@ -313,9 +316,10 @@ final class ManiphestTaskDetailController extends ManiphestController {
       ->setDisabled(!$subtask_options)
       ->setWorkflow($subtask_workflow);
 
+    $blocker_task_uri = $this->getApplicationURI($blocker_task_uri);
     $blocker_task_item = id(new PhabricatorActionView())
       ->setName(pht('Create Blocker Task'))
-      ->setHref($subtask_uri)
+      ->setHref($blocker_task_uri)
       ->setIcon('fa-level-down')
       ->setDisabled(!$subtask_options)
       ->setWorkflow($subtask_workflow);

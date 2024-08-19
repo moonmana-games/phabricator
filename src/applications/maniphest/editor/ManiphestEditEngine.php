@@ -159,6 +159,19 @@ EODOCS
         ->setIsReorderable(false)
         ->setIsDefaultable(false)
         ->setIsLockable(false),
+      id(new PhabricatorHandlesEditField())
+        ->setKey('blocked')
+        ->setLabel(pht('Blocked Task'))
+        ->setDescription(pht('Task to make blocked by this.'))
+        ->setConduitDescription(pht('Create as a blocker of another task.'))
+        ->setConduitTypeDescription(pht('PHID of the blocked task.'))
+        ->setAliases(array('blockedPHID'))
+        ->setTransactionType(ManiphestTaskParentTransaction::TRANSACTIONTYPE)
+        ->setHandleParameterType(new ManiphestTaskListHTTPParameterType())
+        ->setSingleValue(null)
+        ->setIsReorderable(false)
+        ->setIsDefaultable(false)
+        ->setIsLockable(false),
       id(new PhabricatorColumnsEditField())
         ->setKey('column')
         ->setLabel(pht('Column'))
@@ -328,6 +341,7 @@ EODOCS
       ->setMetadataValue('edge:type', $commit_type)
       ->setValue($commit_phids);
 
+    // file_put_contents('php://stdout', print_r($object, true));
     return $fields;
   }
 
