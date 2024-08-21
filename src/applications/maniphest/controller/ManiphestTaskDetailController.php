@@ -333,6 +333,7 @@ final class ManiphestTaskDetailController extends ManiphestController {
       $blocker_task_item,
       ManiphestTaskHasBlockedRelationship::RELATIONSHIPKEY,
       ManiphestTaskHasParentRelationship::RELATIONSHIPKEY,
+      ManiphestTaskHasBlockerRelationship::RELATIONSHIPKEY,
       ManiphestTaskHasSubtaskRelationship::RELATIONSHIPKEY,
       ManiphestTaskMergeInRelationship::RELATIONSHIPKEY,
       ManiphestTaskCloseAsDuplicateRelationship::RELATIONSHIPKEY,
