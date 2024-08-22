@@ -9,12 +9,12 @@ final class ManiphestTaskGraph
   protected function getEdgeTypes() {
     return array(
       HasParentTaskEdgeType::EDGECONST,
-      ManiphestTaskDependsOnTaskEdgeType::EDGECONST,
+      HasSubtaskTaskEdgeType::EDGECONST,
     );
   }
 
   protected function getParentEdgeType() {
-    return ManiphestTaskDependsOnTaskEdgeType::EDGECONST;
+    return HasSubtaskTaskEdgeType::EDGECONST;
   }
 
   protected function newQuery() {
@@ -183,7 +183,7 @@ final class ManiphestTaskGraph
   }
 
   private function isChildTask($task_phid) {
-    $map = $this->getSeedMap(ManiphestTaskDependsOnTaskEdgeType::EDGECONST);
+    $map = $this->getSeedMap(HasSubtaskTaskEdgeType::EDGECONST);
     return isset($map[$task_phid]);
   }
 

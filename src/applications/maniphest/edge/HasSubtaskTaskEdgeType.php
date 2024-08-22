@@ -1,6 +1,6 @@
 <?php
 
-final class ManiphestTaskDependsOnTaskEdgeType extends PhabricatorEdgeType {
+final class HasSubtaskTaskEdgeType extends PhabricatorEdgeType {
 
   const EDGECONST = 3;
 

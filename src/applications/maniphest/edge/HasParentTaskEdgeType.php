@@ -4,7 +4,7 @@ final class HasParentTaskEdgeType extends PhabricatorEdgeType {
   const EDGECONST = 4;
 
   public function getInverseEdgeConstant() {
-    return ManiphestTaskDependsOnTaskEdgeType::EDGECONST;
+    return HasSubtaskTaskEdgeType::EDGECONST;
   }
 
   public function shouldWriteInverseTransactions() {

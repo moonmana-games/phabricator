@@ -34,7 +34,7 @@ final class ManiphestTaskGraphController
       ->loadGraph();
     if (!$task_graph->isEmpty()) {
       $parent_type = HasParentTaskEdgeType::EDGECONST;
-      $subtask_type = ManiphestTaskDependsOnTaskEdgeType::EDGECONST;
+      $subtask_type = HasSubtaskTaskEdgeType::EDGECONST;
       $parent_map = $task_graph->getEdges($parent_type);
       $subtask_map = $task_graph->getEdges($subtask_type);
       $parent_list = idx($parent_map, $task->getPHID(), array());

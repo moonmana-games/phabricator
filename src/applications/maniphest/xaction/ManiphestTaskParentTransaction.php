@@ -15,7 +15,7 @@ final class ManiphestTaskParentTransaction
 
   public function applyExternalEffects($object, $value) {
     $parent_phid = $value;
-    $parent_type = ManiphestTaskDependsOnTaskEdgeType::EDGECONST;
+    $parent_type = HasSubtaskTaskEdgeType::EDGECONST;
     $task_phid = $object->getPHID();
 
     id(new PhabricatorEdgeEditor())

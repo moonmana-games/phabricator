@@ -6,7 +6,7 @@ final class HasBlockerRelationship
   const RELATIONSHIPKEY = 'task.has-blocker';
 
   public function getEdgeConstant() {
-    return ManiphestTaskDependsOnTaskEdgeType::EDGECONST;
+    return HasSubtaskTaskEdgeType::EDGECONST;
   }
 
   protected function getActionName() {

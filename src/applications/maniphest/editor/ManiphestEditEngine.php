@@ -273,7 +273,7 @@ EODOCS
           ->setHeader(pht('Description Preview')));
 
     $parent_type = HasParentTaskEdgeType::EDGECONST;
-    $subtask_type = ManiphestTaskDependsOnTaskEdgeType::EDGECONST;
+    $subtask_type = HasSubtaskTaskEdgeType::EDGECONST;
     $commit_type = ManiphestTaskHasCommitEdgeType::EDGECONST;
 
     $src_phid = $object->getPHID();

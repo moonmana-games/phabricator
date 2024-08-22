@@ -6,7 +6,7 @@ final class HasSubtaskRelationship
   const RELATIONSHIPKEY = 'task.has-subtask';
 
   public function getEdgeConstant() {
-    return ManiphestTaskDependsOnTaskEdgeType::EDGECONST;
+    return HasSubtaskTaskEdgeType::EDGECONST;
   }
 
   protected function getActionName() {
