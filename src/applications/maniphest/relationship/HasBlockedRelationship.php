@@ -6,7 +6,7 @@ final class HasBlockedRelationship
   const RELATIONSHIPKEY = 'task.has-blocked';
 
   public function getEdgeConstant() {
-    return HasParentTaskEdgeType::EDGECONST;
+    return HasBlockerTaskEdgeType::EDGECONST;
   }
 
   protected function getActionName() {
