@@ -331,12 +331,12 @@ final class ManiphestTaskDetailController extends ManiphestController {
     $submenu_actions = array(
       $subtask_item,
       $blocker_task_item,
-      ManiphestTaskHasBlockedRelationship::RELATIONSHIPKEY,
-      ManiphestTaskHasParentRelationship::RELATIONSHIPKEY,
-      ManiphestTaskHasBlockerRelationship::RELATIONSHIPKEY,
-      ManiphestTaskHasSubtaskRelationship::RELATIONSHIPKEY,
-      ManiphestTaskMergeInRelationship::RELATIONSHIPKEY,
-      ManiphestTaskCloseAsDuplicateRelationship::RELATIONSHIPKEY,
+      HasBlockedRelationship::RELATIONSHIPKEY,
+      HasParentRelationship::RELATIONSHIPKEY,
+      HasBlockerRelationship::RELATIONSHIPKEY,
+      HasSubtaskRelationship::RELATIONSHIPKEY,
+      MergeInRelationship::RELATIONSHIPKEY,
+      CloseAsDuplicateRelationship::RELATIONSHIPKEY,
     );
 
     $task_submenu = $relationship_list->newActionSubmenu($submenu_actions)

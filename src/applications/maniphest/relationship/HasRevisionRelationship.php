@@ -1,40 +1,40 @@
 <?php
 
-final class ManiphestTaskHasCommitRelationship
+final class HasRevisionRelationship
   extends ManiphestTaskRelationship {
 
-  const RELATIONSHIPKEY = 'task.has-commit';
+  const RELATIONSHIPKEY = 'task.has-revision';
 
   public function getEdgeConstant() {
-    return ManiphestTaskHasCommitEdgeType::EDGECONST;
+    return ManiphestTaskHasRevisionEdgeType::EDGECONST;
   }
 
   protected function getActionName() {
-    return pht('Edit Commits');
+    return pht('Edit Revisions');
   }
 
   protected function getActionIcon() {
-    return 'fa-code';
+    return 'fa-cog';
   }
 
   public function canRelateObjects($src, $dst) {
-    return ($dst instanceof PhabricatorRepositoryCommit);
+    return ($dst instanceof DifferentialRevision);
   }
 
   public function getDialogTitleText() {
-    return pht('Edit Related Commits');
+    return pht('Edit Related Revisions');
   }
 
   public function getDialogHeaderText() {
-    return pht('Current Commits');
+    return pht('Current Revisions');
   }
 
   public function getDialogButtonText() {
-    return pht('Save Related Commits');
+    return pht('Save Related Revisions');
   }
 
   protected function newRelationshipSource() {
-    return new DiffusionCommitRelationshipSource();
+    return new DifferentialRevisionRelationshipSource();
   }
 
 }

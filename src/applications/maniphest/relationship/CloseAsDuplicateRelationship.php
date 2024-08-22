@@ -1,20 +1,20 @@
 <?php
 
-final class ManiphestTaskMergeInRelationship
+final class CloseAsDuplicateRelationship
   extends ManiphestTaskRelationship {
 
-  const RELATIONSHIPKEY = 'task.merge-in';
+  const RELATIONSHIPKEY = 'task.close-as-duplicate';
 
   public function getEdgeConstant() {
-    return ManiphestTaskHasDuplicateTaskEdgeType::EDGECONST;
+    return ManiphestTaskIsDuplicateOfTaskEdgeType::EDGECONST;
   }
 
   protected function getActionName() {
-    return pht('Merge Duplicates In');
+    return pht('Close As Duplicate');
   }
 
   protected function getActionIcon() {
-    return 'fa-compress';
+    return 'fa-times';
   }
 
   public function canRelateObjects($src, $dst) {
@@ -26,15 +26,15 @@ final class ManiphestTaskMergeInRelationship
   }
 
   public function getDialogTitleText() {
-    return pht('Merge Duplicates Into This Task');
+    return pht('Close As Duplicate');
   }
 
   public function getDialogHeaderText() {
-    return pht('Tasks to Close and Merge');
+    return pht('Close This Task As a Duplicate Of');
   }
 
   public function getDialogButtonText() {
-    return pht('Close and Merge Selected Tasks');
+    return pht('Merge Into Selected Task');
   }
 
   protected function newRelationshipSource() {
@@ -53,24 +53,28 @@ final class ManiphestTaskMergeInRelationship
     return false;
   }
 
+  public function getMaximumSelectionSize() {
+    return 1;
+  }
+
   public function willUpdateRelationships($object, array $add, array $rem) {
-    return $this->newMergeFromTransactions($add);
+    $task = head($add);
+    return $this->newMergeIntoTransactions($task);
   }
 
   public function didUpdateRelationships($object, array $add, array $rem) {
     $viewer = $this->getViewer();
     $content_source = $this->getContentSource();
 
-    foreach ($add as $task) {
-      $xactions = $this->newMergeIntoTransactions($object);
+    $task = head($add);
+    $xactions = $this->newMergeFromTransactions(array($object));
 
-      $task->getApplicationTransactionEditor()
-        ->setActor($viewer)
-        ->setContentSource($content_source)
-        ->setContinueOnMissingFields(true)
-        ->setContinueOnNoEffect(true)
-        ->applyTransactions($task, $xactions);
-    }
+    $task->getApplicationTransactionEditor()
+      ->setActor($viewer)
+      ->setContentSource($content_source)
+      ->setContinueOnMissingFields(true)
+      ->setContinueOnNoEffect(true)
+      ->applyTransactions($task, $xactions);
   }
 
 }

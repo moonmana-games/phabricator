@@ -1,6 +1,6 @@
 <?php
 
-final class ManiphestTaskHasMockRelationship
+final class HasMockRelationship
   extends ManiphestTaskRelationship {
 
   const RELATIONSHIPKEY = 'task.has-mock';

@@ -1,20 +1,20 @@
 <?php
 
-final class ManiphestTaskHasBlockerRelationship
+final class HasBlockedRelationship
   extends ManiphestTaskRelationship {
 
-  const RELATIONSHIPKEY = 'task.has-blocker';
+  const RELATIONSHIPKEY = 'task.has-blocked';
 
   public function getEdgeConstant() {
-    return ManiphestTaskDependsOnTaskEdgeType::EDGECONST;
+    return ManiphestTaskDependedOnByTaskEdgeType::EDGECONST;
   }
 
   protected function getActionName() {
-    return pht('Edit Blocker Tasks');
+    return pht('Edit Blocked Tasks');
   }
 
   protected function getActionIcon() {
-    return 'fa-chevron-circle-down';
+    return 'fa-chevron-circle-up';
   }
 
   public function canRelateObjects($src, $dst) {
@@ -26,15 +26,15 @@ final class ManiphestTaskHasBlockerRelationship
   }
 
   public function getDialogTitleText() {
-    return pht('Edit Blocker Tasks');
+    return pht('Edit Blocked Tasks');
   }
 
   public function getDialogHeaderText() {
-    return pht('Current Blocker Tasks');
+    return pht('Current Blocked Tasks');
   }
 
   public function getDialogButtonText() {
-    return pht('Save Blocker Tasks');
+    return pht('Save Blocked Tasks');
   }
 
   protected function newRelationshipSource() {

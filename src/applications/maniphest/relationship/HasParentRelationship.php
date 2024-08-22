@@ -1,20 +1,20 @@
 <?php
 
-final class ManiphestTaskHasSubtaskRelationship
+final class HasParentRelationship
   extends ManiphestTaskRelationship {
 
-  const RELATIONSHIPKEY = 'task.has-subtask';
+  const RELATIONSHIPKEY = 'task.has-parent';
 
   public function getEdgeConstant() {
-    return ManiphestTaskDependsOnTaskEdgeType::EDGECONST;
+    return ManiphestTaskDependedOnByTaskEdgeType::EDGECONST;
   }
 
   protected function getActionName() {
-    return pht('Edit Subtasks');
+    return pht('Edit Parent Tasks');
   }
 
   protected function getActionIcon() {
-    return 'fa-chevron-circle-down';
+    return 'fa-chevron-circle-up';
   }
 
   public function canRelateObjects($src, $dst) {
@@ -26,15 +26,15 @@ final class ManiphestTaskHasSubtaskRelationship
   }
 
   public function getDialogTitleText() {
-    return pht('Edit Subtasks');
+    return pht('Edit Parent Tasks');
   }
 
   public function getDialogHeaderText() {
-    return pht('Current Subtasks');
+    return pht('Current Parent Tasks');
   }
 
   public function getDialogButtonText() {
-    return pht('Save Subtasks');
+    return pht('Save Parent Tasks');
   }
 
   protected function newRelationshipSource() {
