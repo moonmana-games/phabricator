@@ -158,7 +158,7 @@ final class ManiphestTask extends ManiphestDAO
   public function loadDependedOnByTaskPHIDs() {
     return PhabricatorEdgeQuery::loadDestinationPHIDs(
       $this->getPHID(),
-      ManiphestTaskDependedOnByTaskEdgeType::EDGECONST);
+      HasParentTaskEdgeType::EDGECONST);
   }
 
   public function generatePHID() {

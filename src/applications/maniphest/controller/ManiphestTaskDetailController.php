@@ -88,7 +88,7 @@ final class ManiphestTaskDetailController extends ManiphestController {
       ->setLimit($graph_limit)
       ->loadGraph();
     if (!$task_graph->isEmpty()) {
-      $parent_type = ManiphestTaskDependedOnByTaskEdgeType::EDGECONST;
+      $parent_type = HasParentTaskEdgeType::EDGECONST;
       $subtask_type = ManiphestTaskDependsOnTaskEdgeType::EDGECONST;
       $parent_map = $task_graph->getEdges($parent_type);
       $subtask_map = $task_graph->getEdges($subtask_type);

@@ -272,7 +272,7 @@ EODOCS
         id(new PHUIRemarkupPreviewPanel())
           ->setHeader(pht('Description Preview')));
 
-    $parent_type = ManiphestTaskDependedOnByTaskEdgeType::EDGECONST;
+    $parent_type = HasParentTaskEdgeType::EDGECONST;
     $subtask_type = ManiphestTaskDependsOnTaskEdgeType::EDGECONST;
     $commit_type = ManiphestTaskHasCommitEdgeType::EDGECONST;
 

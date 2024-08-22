@@ -6,7 +6,7 @@ final class HasParentRelationship
   const RELATIONSHIPKEY = 'task.has-parent';
 
   public function getEdgeConstant() {
-    return ManiphestTaskDependedOnByTaskEdgeType::EDGECONST;
+    return HasParentTaskEdgeType::EDGECONST;
   }
 
   protected function getActionName() {

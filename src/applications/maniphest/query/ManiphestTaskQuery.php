@@ -618,7 +618,7 @@ final class ManiphestTaskQuery extends PhabricatorCursorPagedPolicyAwareQuery {
     $edge_table = PhabricatorEdgeConfig::TABLE_NAME_EDGE;
     $task_table = $this->newResultObject()->getTableName();
 
-    $parent_type = ManiphestTaskDependedOnByTaskEdgeType::EDGECONST;
+    $parent_type = HasParentTaskEdgeType::EDGECONST;
     $subtask_type = ManiphestTaskDependsOnTaskEdgeType::EDGECONST;
 
     $joins = array();
