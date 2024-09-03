@@ -104,9 +104,15 @@ final class ManiphestTaskGraph
     if ($this->isParentTask($phid)) {
       $marker = 'fa-chevron-circle-up bluegrey';
       $marker_tip = pht('Direct Parent');
-    } else if ($this->isChildTask($phid)) {
+    } elseif ($this->isBlockedTask($phid)) {
+      $marker = 'fa-chevron-circle-up bluegrey';
+      $marker_tip = pht('Direct Blocked');
+    } elseif ($this->isChildTask($phid)) {
       $marker = 'fa-chevron-circle-down bluegrey';
       $marker_tip = pht('Direct Subtask');
+    } elseif ($this->isBlockerTask($phid)) {
+      $marker = 'fa-chevron-circle-down bluegrey';
+      $marker_tip = pht('Direct Blocker');
     } else {
       $marker = null;
     }
@@ -182,8 +188,18 @@ final class ManiphestTaskGraph
     return isset($map[$task_phid]);
   }
 
+  private function isBlockedTask($task_phid) {
+    $map = $this->getSeedMap(HasBlockedTaskEdgeType::EDGECONST);
+    return isset($map[$task_phid]);
+  }
+
   private function isChildTask($task_phid) {
     $map = $this->getSeedMap(HasSubtaskTaskEdgeType::EDGECONST);
+    return isset($map[$task_phid]);
+  }
+
+  private function isBlockerTask($task_phid) {
+    $map = $this->getSeedMap(HasBlockerTaskEdgeType::EDGECONST);
     return isset($map[$task_phid]);
   }
 
