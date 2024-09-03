@@ -166,7 +166,7 @@ EODOCS
         ->setConduitDescription(pht('Create as a blocker of another task.'))
         ->setConduitTypeDescription(pht('PHID of the blocked task.'))
         ->setAliases(array('blockedPHID'))
-        ->setTransactionType(ManiphestTaskParentTransaction::TRANSACTIONTYPE)
+        ->setTransactionType(ManiphestTaskBlockedTransaction::TRANSACTIONTYPE)
         ->setHandleParameterType(new ManiphestTaskListHTTPParameterType())
         ->setSingleValue(null)
         ->setIsReorderable(false)
