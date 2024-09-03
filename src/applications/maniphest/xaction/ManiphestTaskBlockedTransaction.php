@@ -15,7 +15,7 @@ final class ManiphestTaskBlockedTransaction
 
   public function applyExternalEffects($object, $value) {
     $blocked_phid = $value;
-    $blocked_type = HasBlockerTaskEdgeType::EDGECONST;
+    $blocked_type = HasBlockedTaskEdgeType::EDGECONST;
     $task_phid = $object->getPHID();
 
     id(new PhabricatorEdgeEditor())
