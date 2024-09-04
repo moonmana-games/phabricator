@@ -2,8 +2,8 @@
 
 final class ManiphestTaskDetailController extends ManiphestController {
 
-  private $graph_menu;
-  private $related_tabs = array();
+  private $graphMenu;
+  private $relatedTabs = [];
 
   public function shouldAllowPublic() {
     return true;
@@ -74,13 +74,13 @@ final class ManiphestTaskDetailController extends ManiphestController {
         );
       }
 
-      $this->graph_menu = $this->newTaskGraphDropdownMenu(
+      $this->graphMenu = $this->newTaskGraphDropdownMenu(
         $task,
         $has_parents,
         $has_subtasks,
         true);
 
-      $this->related_tabs = id(new PHUITabView())
+      $this->relatedTabs = id(new PHUITabView())
         ->setName(pht('Task Graph'))
         ->setKey('graph')
         ->appendChild($graph_table)
@@ -161,8 +161,8 @@ final class ManiphestTaskDetailController extends ManiphestController {
     $comment_view->setTransactionTimeline($timeline);
 
     $this->buildGraph($task);
-    $related_tabs[] = $this->related_tabs;
-    $graph_menu = $this->graph_menu;
+    $related_tabs[] = $this->relatedTabs;
+    $graph_menu = $this->graphMenu;
 
     $related_tabs[] = $this->newMocksTab($task, $query);
     $related_tabs[] = $this->newMentionsTab($task, $query);
