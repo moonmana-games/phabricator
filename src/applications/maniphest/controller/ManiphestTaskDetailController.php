@@ -249,6 +249,61 @@ final class ManiphestTaskDetailController extends ManiphestController {
     return $view;
   }
 
+  private function buildSubtaskItem(
+    ManiphestTask $task,
+    PhabricatorEditEngine $edit_engine,
+    int $subtask_type) {
+    
+    switch ($subtask_type) {
+      case ManiphestTaskDependsOnTaskEdgeType::EDGECONST:
+        $subtask_query_param = 'parent';
+        $view_name = 'Create Subtask';
+        $subtask_controller = 'subtask';
+        break;
+      
+      case ManiphestTaskBlockerEdgeType::EDGECONST:
+        $subtask_query_param = 'blocked';
+        $view_name = 'Create Blocker';
+        $subtask_controller = 'blocker';
+        break;
+    }
+
+    $id = $task->getID();
+    
+    $subtype_map = $task->newEditEngineSubtypeMap();
+    $subtask_options = $subtype_map->getCreateFormsForSubtype(
+      $edit_engine,
+      $task);
+
+    // If no forms are available, we want to show the user an error.
+    // If one form is available, we take them user directly to the form.
+    // If two or more forms are available, we give the user a choice.
+
+    // The "subtask" controller handles the first case (no forms) and the
+    // third case (more than one form). In the case of one form, we link
+    // directly to the form.
+    $subtask_uri = "/task/{$subtask_controller}/{$id}/";
+    $subtask_workflow = true;
+
+    if (count($subtask_options) == 1) {
+      $subtask_form = head($subtask_options);
+      $form_key = $subtask_form->getIdentifier();
+      $subtask_uri = id(new PhutilURI("/task/edit/form/{$form_key}/"))
+        ->replaceQueryParam($subtask_query_param, $id)
+        ->replaceQueryParam('template', $id)
+        ->replaceQueryParam('status', ManiphestTaskStatus::getDefaultStatus());
+      $subtask_workflow = false;
+    }
+
+    $subtask_uri = $this->getApplicationURI($subtask_uri);
+
+    return id(new PhabricatorActionView())
+      ->setName(pht($view_name))
+      ->setHref($subtask_uri)
+      ->setIcon('fa-level-down')
+      ->setDisabled(!$subtask_options)
+      ->setWorkflow($subtask_workflow);
+  }
 
   private function buildCurtain(
     ManiphestTask $task,
@@ -256,7 +311,6 @@ final class ManiphestTaskDetailController extends ManiphestController {
     $viewer = $this->getViewer();
 
     $id = $task->getID();
-    $phid = $task->getPHID();
 
     $can_edit = PhabricatorPolicyFilter::hasCapability(
       $viewer,
@@ -279,46 +333,17 @@ final class ManiphestTaskDetailController extends ManiphestController {
         ->setDisabled(!$can_edit)
         ->setWorkflow($workflow_edit));
 
-    $subtype_map = $task->newEditEngineSubtypeMap();
-    $subtask_options = $subtype_map->getCreateFormsForSubtype(
-      $edit_engine,
-      $task);
-
-    // If no forms are available, we want to show the user an error.
-    // If one form is available, we take them user directly to the form.
-    // If two or more forms are available, we give the user a choice.
-
-    // The "subtask" controller handles the first case (no forms) and the
-    // third case (more than one form). In the case of one form, we link
-    // directly to the form.
-    $subtask_uri = "/task/subtask/{$id}/";
-    $subtask_workflow = true;
-
-    if (count($subtask_options) == 1) {
-      $subtask_form = head($subtask_options);
-      $form_key = $subtask_form->getIdentifier();
-      $subtask_uri = id(new PhutilURI("/task/edit/form/{$form_key}/"))
-        ->replaceQueryParam('parent', $id)
-        ->replaceQueryParam('template', $id)
-        ->replaceQueryParam('status', ManiphestTaskStatus::getDefaultStatus());
-      $subtask_workflow = false;
-    }
-
-    $subtask_uri = $this->getApplicationURI($subtask_uri);
-
-    $subtask_item = id(new PhabricatorActionView())
-      ->setName(pht('Create Subtask'))
-      ->setHref($subtask_uri)
-      ->setIcon('fa-level-down')
-      ->setDisabled(!$subtask_options)
-      ->setWorkflow($subtask_workflow);
 
     $relationship_list = PhabricatorObjectRelationshipList::newForObject(
       $viewer,
       $task);
 
+    $subtask_item = $this->buildSubtaskItem($task, $edit_engine, ManiphestTaskDependsOnTaskEdgeType::EDGECONST);
+    $blocker_item = $this->buildSubtaskItem($task, $edit_engine, ManiphestTaskBlockerEdgeType::EDGECONST);
+
     $submenu_actions = array(
       $subtask_item,
+      $blocker_item,
       ManiphestTaskHasParentRelationship::RELATIONSHIPKEY,
       ManiphestTaskHasSubtaskRelationship::RELATIONSHIPKEY,
       ManiphestTaskMergeInRelationship::RELATIONSHIPKEY,
