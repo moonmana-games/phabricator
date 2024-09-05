@@ -1,10 +1,13 @@
 <?php
 
-final class ManiphestTaskGraph
+class ManiphestTaskGraph
   extends PhabricatorObjectGraph {
 
   private $seedMaps = array();
   private $isStandalone;
+
+  const PARENT_MARKER_TYPE = 'Direct Parent';
+  const SUBTASK_MARKER_TYPE = 'Direct Subtask';
 
   protected function getEdgeTypes() {
     return array(
@@ -103,10 +106,10 @@ final class ManiphestTaskGraph
 
     if ($this->isParentTask($phid)) {
       $marker = 'fa-chevron-circle-up bluegrey';
-      $marker_tip = pht('Direct Parent');
+      $marker_tip = pht(self::PARENT_MARKER_TYPE);
     } else if ($this->isChildTask($phid)) {
       $marker = 'fa-chevron-circle-down bluegrey';
-      $marker_tip = pht('Direct Subtask');
+      $marker_tip = pht(self::SUBTASK_MARKER_TYPE);
     } else {
       $marker = null;
     }
@@ -177,17 +180,17 @@ final class ManiphestTaskGraph
         ));
   }
 
-  private function isParentTask($task_phid) {
+  protected function isParentTask($task_phid) {
     $map = $this->getSeedMap(HasParentTaskEdgeType::EDGECONST);
     return isset($map[$task_phid]);
   }
 
-  private function isChildTask($task_phid) {
+  protected function isChildTask($task_phid) {
     $map = $this->getSeedMap(HasSubtaskTaskEdgeType::EDGECONST);
     return isset($map[$task_phid]);
   }
 
-  private function getSeedMap($type) {
+  protected function getSeedMap($type) {
     if (!isset($this->seedMaps[$type])) {
       $maps = $this->getEdges($type);
       $phids = idx($maps, $this->getSeedPHID(), array());

@@ -5,24 +5,37 @@ final class ManiphestTaskDetailController extends ManiphestController {
   private $graphMenu;
   private $relatedTabs = [];
 
+  const SUBTASKS = 0;
+  const BLOCKERS = 1;
+
   public function shouldAllowPublic() {
     return true;
   }
 
-  private function buildGraph($task) {
+  private function buildGraphTable($task, $graph_type) {
     $viewer = $this->getViewer();
     $graph_limit = 200;
     $overflow_message = null;
 
-    $task_graph = id(new ManiphestTaskGraph())
-    ->setViewer($viewer)
-    ->setSeedPHID($task->getPHID())
-    ->setLimit($graph_limit)
-    ->loadGraph();
-
-    if (!$task_graph->isEmpty()) {
+    if ($graph_type == self::SUBTASKS) {
+      $task_graph = id(new ManiphestTaskGraph())
+      ->setViewer($viewer)
+      ->setSeedPHID($task->getPHID())
+      ->setLimit($graph_limit)
+      ->loadGraph();
       $parent_type = HasParentTaskEdgeType::EDGECONST;
       $subtask_type = HasSubtaskTaskEdgeType::EDGECONST;
+    } elseif ($graph_type == self::BLOCKERS) {
+      $task_graph = id(new ManiphestBlockerGraph())
+      ->setViewer($viewer)
+      ->setSeedPHID($task->getPHID())
+      ->setLimit($graph_limit)
+      ->loadGraph();
+      $parent_type = HasBlockedTaskEdgeType::EDGECONST;
+      $subtask_type = HasBlockerTaskEdgeType::EDGECONST;
+    }
+
+    if (!$task_graph->isEmpty()) {
       $parent_map = $task_graph->getEdges($parent_type);
       $subtask_map = $task_graph->getEdges($subtask_type);
       $parent_list = idx($parent_map, $task->getPHID(), array());
@@ -79,13 +92,9 @@ final class ManiphestTaskDetailController extends ManiphestController {
         $has_parents,
         $has_subtasks,
         true);
-
-      $this->relatedTabs = id(new PHUITabView())
-        ->setName(pht('Task Graph'))
-        ->setKey('graph')
-        ->appendChild($graph_table)
-        ->appendChild($graph_table);
     }
+
+    return $graph_table;
 
   }
 
@@ -160,7 +169,26 @@ final class ManiphestTaskDetailController extends ManiphestController {
     $timeline->setQuoteRef($monogram);
     $comment_view->setTransactionTimeline($timeline);
 
-    $this->buildGraph($task);
+    $subtask_graph_table = $this->buildGraphTable(
+      $task,
+      self::SUBTASKS
+    );
+    if (!is_null($subtask_graph_table)) {
+      $this->relatedTabs = id(new PHUITabView())
+      ->setName(pht('Task Graph'))
+      ->setKey('graph')
+      ->appendChild($subtask_graph_table);
+    }
+
+    $blocker_graph_table = $this->buildGraphTable(
+      $task,
+      self::BLOCKERS
+    );
+    if (!is_null($blocker_graph_table)) {
+      $this->relatedTabs = id($this->relatedTabs)
+      ->appendChild($blocker_graph_table);
+    }
+
     $related_tabs[] = $this->relatedTabs;
     $graph_menu = $this->graphMenu;
 
