@@ -6,6 +6,85 @@ final class ManiphestTaskDetailController extends ManiphestController {
     return true;
   }
 
+  private function buildGraph(ManiphestTask $task, int $subtask_type) {
+    $viewer = $this->getViewer();
+
+    $graph_limit = 200;
+    $overflow_message = null;
+    $task_graph = id(new ManiphestTaskGraph())
+      ->setViewer($viewer)
+      ->setSeedPHID($task->getPHID())
+      ->setLimit($graph_limit)
+      ->loadGraph();
+
+    $allow_render_graph = false;
+
+    if (!$task_graph->isEmpty()) {
+      $parent_type = ManiphestTaskDependedOnByTaskEdgeType::EDGECONST;
+      $subtask_type = ManiphestTaskDependsOnTaskEdgeType::EDGECONST;
+      $parent_map = $task_graph->getEdges($parent_type);
+      $subtask_map = $task_graph->getEdges($subtask_type);
+      $parent_list = idx($parent_map, $task->getPHID(), array());
+      $subtask_list = idx($subtask_map, $task->getPHID(), array());
+      $has_parents = (bool)$parent_list;
+      $has_subtasks = (bool)$subtask_list;
+
+      // First, get a count of direct parent tasks and subtasks. If there
+      // are too many of these, we just don't draw anything. You can use
+      // the search button to browse tasks with the search UI instead.
+      $direct_count = count($parent_list) + count($subtask_list);
+
+      if ($direct_count > $graph_limit) {
+        $overflow_message = pht(
+          'This task is directly connected to more than %s other tasks. '.
+          'Use %s to browse parents or subtasks, or %s to show more of the '.
+          'graph.',
+          new PhutilNumber($graph_limit),
+          phutil_tag('strong', array(), pht('Search...')),
+          phutil_tag('strong', array(), pht('View Standalone Graph')));
+
+        $graph_table = null;
+      } else {
+        // If there aren't too many direct tasks, but there are too many total
+        // tasks, we'll only render directly connected tasks.
+        if ($task_graph->isOverLimit()) {
+          $task_graph->setRenderOnlyAdjacentNodes(true);
+
+          $overflow_message = pht(
+            'This task is connected to more than %s other tasks. '.
+            'Only direct parents and subtasks are shown here. Use '.
+            '%s to show more of the graph.',
+            new PhutilNumber($graph_limit),
+            phutil_tag('strong', array(), pht('View Standalone Graph')));
+        }
+
+        $graph_table = $task_graph->newGraphTable();
+      }
+
+      if ($overflow_message) {
+        $overflow_view = $this->newTaskGraphOverflowView(
+          $task,
+          $overflow_message,
+          true);
+
+        $graph_table = array(
+          $overflow_view,
+          $graph_table,
+        );
+      }
+
+      $allow_render_graph = true;
+    }
+
+    $result = array(
+      'table' => $graph_table,
+      'has_parents' => $has_parents,
+      'has_subtasks' => $has_subtasks,
+      'allow_render_graph' => $allow_render_graph
+    );
+    return $result;
+  }
+
   public function handleRequest(AphrontRequest $request) {
     $viewer = $this->getViewer();
     $id = $request->getURIData('id');
@@ -80,77 +159,38 @@ final class ManiphestTaskDetailController extends ManiphestController {
     $related_tabs = array();
     $graph_menu = null;
 
-    $graph_limit = 200;
-    $overflow_message = null;
-    $task_graph = id(new ManiphestTaskGraph())
-      ->setViewer($viewer)
-      ->setSeedPHID($task->getPHID())
-      ->setLimit($graph_limit)
-      ->loadGraph();
-    if (!$task_graph->isEmpty()) {
-      $parent_type = ManiphestTaskDependedOnByTaskEdgeType::EDGECONST;
-      $subtask_type = ManiphestTaskDependsOnTaskEdgeType::EDGECONST;
-      $parent_map = $task_graph->getEdges($parent_type);
-      $subtask_map = $task_graph->getEdges($subtask_type);
-      $parent_list = idx($parent_map, $task->getPHID(), array());
-      $subtask_list = idx($subtask_map, $task->getPHID(), array());
-      $has_parents = (bool)$parent_list;
-      $has_subtasks = (bool)$subtask_list;
+    $subtask_graph_map = $this->buildGraph($task, ManiphestTaskDependsOnTaskEdgeType::EDGECONST);
+    $subtask_graph_table = $subtask_graph_map['table'];
+    $has_parents = $subtask_graph_map['has_parents'];
+    $has_subtasks = $subtask_graph_map['has_subtasks'];
 
-      // First, get a count of direct parent tasks and subtasks. If there
-      // are too many of these, we just don't draw anything. You can use
-      // the search button to browse tasks with the search UI instead.
-      $direct_count = count($parent_list) + count($subtask_list);
+    $blocker_graph_map = $this->buildGraph($task, ManiphestTaskBlockerEdgeType::EDGECONST);
+    $blocker_graph_table = $blocker_graph_map['table'];
+    $has_blocked_tasks = $blocker_graph_map['has_parents'];
+    $has_blockers = $blocker_graph_map['has_subtasks'];
 
-      if ($direct_count > $graph_limit) {
-        $overflow_message = pht(
-          'This task is directly connected to more than %s other tasks. '.
-          'Use %s to browse parents or subtasks, or %s to show more of the '.
-          'graph.',
-          new PhutilNumber($graph_limit),
-          phutil_tag('strong', array(), pht('Search...')),
-          phutil_tag('strong', array(), pht('View Standalone Graph')));
-
-        $graph_table = null;
-      } else {
-        // If there aren't too many direct tasks, but there are too many total
-        // tasks, we'll only render directly connected tasks.
-        if ($task_graph->isOverLimit()) {
-          $task_graph->setRenderOnlyAdjacentNodes(true);
-
-          $overflow_message = pht(
-            'This task is connected to more than %s other tasks. '.
-            'Only direct parents and subtasks are shown here. Use '.
-            '%s to show more of the graph.',
-            new PhutilNumber($graph_limit),
-            phutil_tag('strong', array(), pht('View Standalone Graph')));
-        }
-
-        $graph_table = $task_graph->newGraphTable();
-      }
-
-      if ($overflow_message) {
-        $overflow_view = $this->newTaskGraphOverflowView(
-          $task,
-          $overflow_message,
-          true);
-
-        $graph_table = array(
-          $overflow_view,
-          $graph_table,
-        );
-      }
-
+    if ($subtask_graph_map['allow_render_graph']) {
       $graph_menu = $this->newTaskGraphDropdownMenu(
         $task,
         $has_parents,
+        $has_blocked_tasks,
         $has_subtasks,
+        $has_blockers,
         true);
+
+      $subtask_header = id(new PHUIHeaderView())
+        ->setHeader(pht('Subtasks'));
+
+      $blocker_header = id(new PHUIHeaderView())
+        ->setHeader(pht('Blockers'));
 
       $related_tabs[] = id(new PHUITabView())
         ->setName(pht('Task Graph'))
         ->setKey('graph')
-        ->appendChild($graph_table);
+        ->appendChild($subtask_header)
+        ->appendChild($subtask_graph_table)
+        ->appendChild($blocker_header)
+        ->appendChild($blocker_graph_table);
     }
 
     $related_tabs[] = $this->newMocksTab($task, $query);
