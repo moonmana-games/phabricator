@@ -5,8 +5,17 @@ final class ManiphestTaskGraph
 
   private $seedMaps = array();
   private $isStandalone;
-
+  private $subtaskType = ManiphestTaskDependsOnTaskEdgeType::EDGECONST;
+  private $parentMarkerTip = 'Direct Parent';
+  private $childMarkerTip = 'Direct Subtask';
+  
   protected function getEdgeTypes() {
+    if ($this->subtaskType == ManiphestTaskBlockerEdgeType::EDGECONST) {
+      return array(
+        ManiphestTaskBlockedEdgeType::EDGECONST,
+        ManiphestTaskBlockerEdgeType::EDGECONST,
+      );
+    }
     return array(
       ManiphestTaskDependedOnByTaskEdgeType::EDGECONST,
       ManiphestTaskDependsOnTaskEdgeType::EDGECONST,
@@ -14,7 +23,7 @@ final class ManiphestTaskGraph
   }
 
   protected function getParentEdgeType() {
-    return ManiphestTaskDependsOnTaskEdgeType::EDGECONST;
+    return $this->subtaskType;
   }
 
   protected function newQuery() {
@@ -23,6 +32,15 @@ final class ManiphestTaskGraph
 
   protected function isClosed($object) {
     return $object->isClosed();
+  }
+
+  public function setSubtaskType(int $subtask_type) {
+    $this->subtaskType = $subtask_type;
+    if ($subtask_type == ManiphestTaskBlockerEdgeType::EDGECONST) {
+      $this->parentMarkerTip = 'Direct Blocked';
+      $this->childMarkerTip = 'Direct Blocker';
+    }
+    return $this;
   }
 
   public function setIsStandalone($is_standalone) {
@@ -103,10 +121,10 @@ final class ManiphestTaskGraph
 
     if ($this->isParentTask($phid)) {
       $marker = 'fa-chevron-circle-up bluegrey';
-      $marker_tip = pht('Direct Parent');
-    } else if ($this->isChildTask($phid)) {
+      $marker_tip = pht($this->parentMarkerTip);
+    } elseif ($this->isChildTask($phid)) {
       $marker = 'fa-chevron-circle-down bluegrey';
-      $marker_tip = pht('Direct Subtask');
+      $marker_tip = pht($this->childMarkerTip);
     } else {
       $marker = null;
     }

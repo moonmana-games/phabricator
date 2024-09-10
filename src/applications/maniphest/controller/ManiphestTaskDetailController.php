@@ -7,12 +7,26 @@ final class ManiphestTaskDetailController extends ManiphestController {
   }
 
   private function buildGraph(ManiphestTask $task, int $subtask_type) {
+    switch ($subtask_type) {
+      case ManiphestTaskDependsOnTaskEdgeType::EDGECONST:
+        $parent_type = ManiphestTaskDependedOnByTaskEdgeType::EDGECONST;
+        break;
+      
+      case ManiphestTaskBlockerEdgeType::EDGECONST:
+        $parent_type = ManiphestTaskBlockedEdgeType::EDGECONST;
+        break;
+
+      default:
+        return null;
+    }
+
     $viewer = $this->getViewer();
 
     $graph_limit = 200;
     $overflow_message = null;
     $task_graph = id(new ManiphestTaskGraph())
       ->setViewer($viewer)
+      ->setSubtaskType($subtask_type)
       ->setSeedPHID($task->getPHID())
       ->setLimit($graph_limit)
       ->loadGraph();
@@ -20,8 +34,6 @@ final class ManiphestTaskDetailController extends ManiphestController {
     $allow_render_graph = false;
 
     if (!$task_graph->isEmpty()) {
-      $parent_type = ManiphestTaskDependedOnByTaskEdgeType::EDGECONST;
-      $subtask_type = ManiphestTaskDependsOnTaskEdgeType::EDGECONST;
       $parent_map = $task_graph->getEdges($parent_type);
       $subtask_map = $task_graph->getEdges($subtask_type);
       $parent_list = idx($parent_map, $task->getPHID(), array());
@@ -306,6 +318,9 @@ final class ManiphestTaskDetailController extends ManiphestController {
         $view_name = 'Create Blocker';
         $subtask_controller = 'blocker';
         break;
+
+      default:
+        return null;
     }
 
     $id = $task->getID();
