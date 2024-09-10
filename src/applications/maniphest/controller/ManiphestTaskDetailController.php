@@ -32,6 +32,9 @@ final class ManiphestTaskDetailController extends ManiphestController {
       ->loadGraph();
 
     $allow_render_graph = false;
+    $graph_table = null;
+    $has_parents = null;
+    $has_subtasks = null;
 
     if (!$task_graph->isEmpty()) {
       $parent_map = $task_graph->getEdges($parent_type);
@@ -54,8 +57,6 @@ final class ManiphestTaskDetailController extends ManiphestController {
           new PhutilNumber($graph_limit),
           phutil_tag('strong', array(), pht('Search...')),
           phutil_tag('strong', array(), pht('View Standalone Graph')));
-
-        $graph_table = null;
       } else {
         // If there aren't too many direct tasks, but there are too many total
         // tasks, we'll only render directly connected tasks.
