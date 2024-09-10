@@ -171,6 +171,7 @@ final class ManiphestTaskDetailController extends ManiphestController {
 
     $related_tabs = array();
     $graph_menu = null;
+    $new_tab = null;
 
     $subtask_graph_map = $this->buildGraph($task, ManiphestTaskDependsOnTaskEdgeType::EDGECONST);
     $subtask_graph_table = $subtask_graph_map['table'];
@@ -182,7 +183,7 @@ final class ManiphestTaskDetailController extends ManiphestController {
     $has_blocked_tasks = $blocker_graph_map['has_parents'];
     $has_blockers = $blocker_graph_map['has_subtasks'];
 
-    if ($subtask_graph_map['allow_render_graph']) {
+    if ($subtask_graph_map['allow_render_graph'] || $blocker_graph_map['allow_render_graph']) {
       $graph_menu = $this->newTaskGraphDropdownMenu(
         $task,
         $has_parents,
@@ -191,21 +192,28 @@ final class ManiphestTaskDetailController extends ManiphestController {
         $has_blockers,
         true);
 
+      $new_tab = id(new PHUITabView())
+        ->setName(pht('Task Graph'))
+        ->setKey('graph');
+    }
+
+    if ($subtask_graph_map['allow_render_graph']) {
       $subtask_header = id(new PHUIHeaderView())
         ->setHeader(pht('Subtasks'));
+      $new_tab
+        ->appendChild($subtask_header)
+        ->appendChild($subtask_graph_table);
+    }
 
+    if ($blocker_graph_map['allow_render_graph']) {
       $blocker_header = id(new PHUIHeaderView())
         ->setHeader(pht('Blockers'));
-
-      $related_tabs[] = id(new PHUITabView())
-        ->setName(pht('Task Graph'))
-        ->setKey('graph')
-        ->appendChild($subtask_header)
-        ->appendChild($subtask_graph_table)
+      $new_tab
         ->appendChild($blocker_header)
         ->appendChild($blocker_graph_table);
     }
 
+    $related_tabs[] = $new_tab;
     $related_tabs[] = $this->newMocksTab($task, $query);
     $related_tabs[] = $this->newMentionsTab($task, $query);
     $related_tabs[] = $this->newDuplicatesTab($task, $query);
