@@ -196,12 +196,16 @@ final class ManiphestTaskGraph
   }
 
   private function isParentTask($task_phid) {
-    $map = $this->getSeedMap(ManiphestTaskDependedOnByTaskEdgeType::EDGECONST);
+    if ($this->subtaskType == ManiphestTaskBlockerEdgeType::EDGECONST) {
+      $map = $this->getSeedMap(ManiphestTaskBlockedEdgeType::EDGECONST);
+    } else {
+      $map = $this->getSeedMap(ManiphestTaskDependedOnByTaskEdgeType::EDGECONST);
+    }
     return isset($map[$task_phid]);
   }
 
   private function isChildTask($task_phid) {
-    $map = $this->getSeedMap(ManiphestTaskDependsOnTaskEdgeType::EDGECONST);
+    $map = $this->getSeedMap($this->subtaskType);
     return isset($map[$task_phid]);
   }
 
