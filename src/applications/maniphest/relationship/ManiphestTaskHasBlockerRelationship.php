@@ -10,7 +10,7 @@ final class ManiphestTaskHasBlockerRelationship
   }
 
   protected function getActionName() {
-    return pht('Edit Blockers');
+    return pht('Blocked by.. (Edit)');
   }
 
   protected function getActionIcon() {

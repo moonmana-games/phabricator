@@ -407,10 +407,10 @@ final class ManiphestTaskDetailController extends ManiphestController {
 
     $submenu_actions = array(
       $subtask_item,
-      $blocker_item,
       ManiphestTaskHasParentRelationship::RELATIONSHIPKEY,
-      ManiphestTaskHasBlockedRelationship::RELATIONSHIPKEY,
       ManiphestTaskHasSubtaskRelationship::RELATIONSHIPKEY,
+      $blocker_item,
+      ManiphestTaskHasBlockedRelationship::RELATIONSHIPKEY,
       ManiphestTaskHasBlockerRelationship::RELATIONSHIPKEY,
       ManiphestTaskMergeInRelationship::RELATIONSHIPKEY,
       ManiphestTaskCloseAsDuplicateRelationship::RELATIONSHIPKEY,

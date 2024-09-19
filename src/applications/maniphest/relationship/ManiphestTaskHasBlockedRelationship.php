@@ -10,7 +10,7 @@ final class ManiphestTaskHasBlockedRelationship
   }
 
   protected function getActionName() {
-    return pht('Edit Blocked Tasks');
+    return pht('It blocks.. (Edit)');
   }
 
   protected function getActionIcon() {
