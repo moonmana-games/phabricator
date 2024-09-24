@@ -172,7 +172,10 @@ final class PhabricatorEmailAddressesSettingsPanel
     $email   = null;
     $errors  = array();
     if ($request->isDialogFormPost()) {
-      $email = trim($request->getStr('email'));
+      $email = $request->getStr('email');
+      if (phutil_nonempty_string($email)) {
+        $email = trim($email);
+      }
 
       if ($new == 'verify') {
         // The user clicked "Done" from the "an email has been sent" dialog.
@@ -184,7 +187,7 @@ final class PhabricatorEmailAddressesSettingsPanel
         new PhabricatorSettingsAddEmailAction(),
         1);
 
-      if (!strlen($email)) {
+      if ($email === null || !strlen($email)) {
         $e_email = pht('Required');
         $errors[] = pht('Email is required.');
       } else if (!PhabricatorUserEmail::isValidAddress($email)) {
@@ -398,8 +401,9 @@ final class PhabricatorEmailAddressesSettingsPanel
       ->setTitle(pht('Change primary email address?'))
       ->appendParagraph(
         pht(
-          'If you change your primary address, Phabricator will send all '.
+          'If you change your primary address, %s will send all '.
           'email to %s.',
+          PlatformSymbols::getPlatformServerName(),
           $address))
       ->appendParagraph(
         pht(

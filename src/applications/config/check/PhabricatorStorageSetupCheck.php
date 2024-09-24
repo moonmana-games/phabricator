@@ -83,7 +83,7 @@ final class PhabricatorStorageSetupCheck extends PhabricatorSetupCheck {
         $message = pht(
           'When you upload a file via drag-and-drop or the API, chunks must '.
           'be buffered into memory before being written to permanent '.
-          'storage. Phabricator needs memory available to store these '.
+          'storage. This server needs memory available to store these '.
           'chunks while they are uploaded, but PHP is currently configured '.
           'to severely limit the available memory.'.
           "\n\n".
@@ -97,7 +97,7 @@ final class PhabricatorStorageSetupCheck extends PhabricatorSetupCheck {
           "The easiest way to resolve this issue is to set %s to %s in your ".
           "PHP configuration, to disable the memory limit. There is ".
           "usually little or no value to using this option to limit ".
-          "Phabricator process memory.".
+          "process memory.".
           "\n\n".
           "You can also increase the limit or ignore this issue and accept ".
           "that you may encounter problems uploading large files and ".
@@ -151,19 +151,19 @@ final class PhabricatorStorageSetupCheck extends PhabricatorSetupCheck {
 
     $how_many = 0;
 
-    if (strlen($access_key)) {
+    if ($access_key !== null && strlen($access_key)) {
       $how_many++;
     }
 
-    if (strlen($secret_key)) {
+    if ($secret_key !== null && strlen($secret_key)) {
       $how_many++;
     }
 
-    if (strlen($region)) {
+    if ($region !== null && strlen($region)) {
       $how_many++;
     }
 
-    if (strlen($endpoint)) {
+    if ($endpoint !== null && strlen($endpoint)) {
       $how_many++;
     }
 

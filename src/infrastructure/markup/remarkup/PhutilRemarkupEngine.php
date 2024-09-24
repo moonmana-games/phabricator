@@ -42,6 +42,14 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
     return $this->mode & self::MODE_HTML_MAIL;
   }
 
+  public function getQuoteDepth() {
+    return $this->getConfig('runtime.quote.depth', 0);
+  }
+
+  public function setQuoteDepth($depth) {
+    return $this->setConfig('runtime.quote.depth', $depth);
+  }
+
   public function setBlockRules(array $rules) {
     assert_instances_of($rules, 'PhutilRemarkupBlockRule');
 
@@ -224,7 +232,9 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
 
       $lines = '';
       for ($ii = $min; $ii < $max; $ii++) {
-        $lines .= $text[$ii];
+        if (isset($text[$ii])) {
+          $lines .= $text[$ii];
+        }
       }
 
       $blocks[$key]['text'] = $lines;
@@ -255,10 +265,16 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
   }
 
   private function markupBlock(array $block) {
+    $rule = $block['rule'];
+
+    $rule->willMarkupChildBlocks();
+
     $children = array();
     foreach ($block['children'] as $child) {
       $children[] = $this->markupBlock($child);
     }
+
+    $rule->didMarkupChildBlocks();
 
     if ($children) {
       $children = $this->flattenOutput($children);
@@ -266,7 +282,7 @@ final class PhutilRemarkupEngine extends PhutilMarkupEngine {
       $children = null;
     }
 
-    return $block['rule']->markupText($block['text'], $children);
+    return $rule->markupText($block['text'], $children);
   }
 
   private function flattenOutput(array $output) {

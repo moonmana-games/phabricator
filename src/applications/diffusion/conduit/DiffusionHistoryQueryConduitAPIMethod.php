@@ -45,17 +45,16 @@ final class DiffusionHistoryQueryConduitAPIMethod
     $repository = $drequest->getRepository();
     $commit_hash = $request->getValue('commit');
     $against_hash = $request->getValue('against');
-
-    $path = $request->getValue('path');
-    if (!strlen($path)) {
-      $path = null;
-    }
-
     $offset = $request->getValue('offset');
     $limit = $request->getValue('limit');
 
-    if (strlen($against_hash)) {
-      $commit_range = "${against_hash}..${commit_hash}";
+    $path = $request->getValue('path');
+    if ($path === null || !strlen($path)) {
+      $path = null;
+    }
+
+    if ($against_hash !== null && strlen($against_hash)) {
+      $commit_range = "{$against_hash}..{$commit_hash}";
     } else {
       $commit_range = $commit_hash;
     }
@@ -145,8 +144,8 @@ final class DiffusionHistoryQueryConduitAPIMethod
     } else {
       $revset_arg = hgsprintf(
         'reverse(ancestors(%s)) and branch(%s)',
-        $drequest->getBranch(),
-        $commit_hash);
+        $commit_hash,
+        $drequest->getBranch());
     }
 
     $hg_analyzer = PhutilBinaryAnalyzer::getForBinary('hg');

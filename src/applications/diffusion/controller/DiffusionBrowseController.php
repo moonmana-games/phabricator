@@ -22,7 +22,7 @@ final class DiffusionBrowseController extends DiffusionController {
     // list.
 
     $grep = $request->getStr('grep');
-    if (strlen($grep)) {
+    if (phutil_nonempty_string($grep)) {
       return $this->browseSearch();
     }
 
@@ -290,6 +290,11 @@ final class DiffusionBrowseController extends DiffusionController {
     $header = $this->buildHeaderView($drequest);
     $header->setHeaderIcon('fa-folder-open');
 
+    $title = '/';
+    if ($drequest->getPath() !== null) {
+      $title = nonempty(basename($drequest->getPath()), '/');
+    }
+
     $empty_result = null;
     $browse_panel = null;
     if (!$results->isValidResults()) {
@@ -298,26 +303,11 @@ final class DiffusionBrowseController extends DiffusionController {
       $empty_result->setDiffusionBrowseResultSet($results);
       $empty_result->setView($request->getStr('view'));
     } else {
-      $phids = array();
-      foreach ($results->getPaths() as $result) {
-        $data = $result->getLastCommitData();
-        if ($data) {
-          if ($data->getCommitDetail('authorPHID')) {
-            $phids[$data->getCommitDetail('authorPHID')] = true;
-          }
-        }
-      }
-
-      $phids = array_keys($phids);
-      $handles = $this->loadViewerHandles($phids);
-
       $browse_table = id(new DiffusionBrowseTableView())
         ->setDiffusionRequest($drequest)
-        ->setHandles($handles)
         ->setPaths($results->getPaths())
         ->setUser($request->getUser());
 
-      $title = nonempty(basename($drequest->getPath()), '/');
       $icon = 'fa-folder-open';
       $browse_header = $this->buildPanelHeaderView($title, $icon);
 
@@ -365,7 +355,7 @@ final class DiffusionBrowseController extends DiffusionController {
 
     return $this->newPage()
       ->setTitle(array(
-          nonempty(basename($drequest->getPath()), '/'),
+          $title,
           $repository->getDisplayName(),
         ))
       ->setCrumbs($crumbs)

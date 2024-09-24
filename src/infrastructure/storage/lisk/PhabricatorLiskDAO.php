@@ -42,7 +42,7 @@ abstract class PhabricatorLiskDAO extends LiskDAO {
     if (!strlen($namespace)) {
       $namespace = self::getDefaultStorageNamespace();
     }
-    if (!strlen($namespace)) {
+    if ($namespace === null || !strlen($namespace)) {
       throw new Exception(pht('No storage namespace configured!'));
     }
     return $namespace;
@@ -138,7 +138,7 @@ abstract class PhabricatorLiskDAO extends LiskDAO {
     throw new PhabricatorClusterImproperWriteException(
       pht(
         'Unable to establish a write-mode connection (to application '.
-        'database "%s") because Phabricator is in read-only mode. Whatever '.
+        'database "%s") because this server is in read-only mode. Whatever '.
         'you are trying to do does not function correctly in read-only mode.',
         $database));
   }
@@ -295,7 +295,7 @@ abstract class PhabricatorLiskDAO extends LiskDAO {
     }
 
     if (function_exists('mb_detect_encoding')) {
-      if (strlen($encoding)) {
+      if ($encoding !== null && strlen($encoding)) {
         $try_encodings = array(
           $encoding,
         );

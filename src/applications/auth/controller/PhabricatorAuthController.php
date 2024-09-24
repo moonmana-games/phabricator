@@ -254,12 +254,16 @@ abstract class PhabricatorAuthController extends PhabricatorController {
     }
 
     $invite_item = id(new PHUIObjectItemView())
-      ->setHeader(pht('Welcome to Phabricator!'))
+      ->setHeader(
+        pht(
+          'Welcome to %s!',
+          PlatformSymbols::getPlatformServerName()))
       ->setImageURI($invite_author->getProfileImageURI())
       ->addAttribute(
         pht(
-          '%s has invited you to join Phabricator.',
-          $invite_author->getFullName()));
+          '%s has invited you to join %s.',
+          $invite_author->getFullName(),
+          PlatformSymbols::getPlatformServerName()));
 
     $invite_list = id(new PHUIObjectItemListView())
       ->addItem($invite_item)
@@ -278,7 +282,7 @@ abstract class PhabricatorAuthController extends PhabricatorController {
       $viewer,
       PhabricatorAuthLoginMessageType::MESSAGEKEY);
 
-    if (!strlen($text)) {
+    if ($text === null || !strlen($text)) {
       return null;
     }
 

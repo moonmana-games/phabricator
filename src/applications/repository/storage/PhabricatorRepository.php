@@ -193,7 +193,7 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
 
   public function getMonogram() {
     $callsign = $this->getCallsign();
-    if (strlen($callsign)) {
+    if (phutil_nonempty_string($callsign)) {
       return "r{$callsign}";
     }
 
@@ -203,7 +203,8 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
 
   public function getDisplayName() {
     $slug = $this->getRepositorySlug();
-    if (strlen($slug)) {
+
+    if (phutil_nonempty_string($slug)) {
       return $slug;
     }
 
@@ -281,9 +282,11 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
 
   public function getSubversionBaseURI($commit = null) {
     $subpath = $this->getDetail('svn-subpath');
-    if (!strlen($subpath)) {
+
+    if (!phutil_nonempty_string($subpath)) {
       $subpath = null;
     }
+
     return $this->getSubversionPathURI($subpath, $commit);
   }
 
@@ -301,7 +304,7 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
 
     $uri = rtrim($uri, '/');
 
-    if (strlen($path)) {
+    if (phutil_nonempty_string($path)) {
       $path = rawurlencode($path);
       $path = str_replace('%2F', '/', $path);
       $uri = $uri.'/'.ltrim($path, '/');
@@ -342,7 +345,7 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
 
     // Make some reasonable effort to produce reasonable default directory
     // names from repository names.
-    if (!strlen($name)) {
+    if ($name === null || !strlen($name)) {
       $name = $this->getName();
       $name = phutil_utf8_strtolower($name);
       $name = preg_replace('@[ -/:->]+@', '-', $name);
@@ -574,12 +577,12 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
 
   public function getURI() {
     $short_name = $this->getRepositorySlug();
-    if (strlen($short_name)) {
+    if (phutil_nonempty_string($short_name)) {
       return "/source/{$short_name}/";
     }
 
     $callsign = $this->getCallsign();
-    if (strlen($callsign)) {
+    if (phutil_nonempty_string($callsign)) {
       return "/diffusion/{$callsign}/";
     }
 
@@ -593,7 +596,7 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
 
   public function getCommitURI($identifier) {
     $callsign = $this->getCallsign();
-    if (strlen($callsign)) {
+    if (phutil_nonempty_string($callsign)) {
       return "/r{$callsign}{$identifier}";
     }
 
@@ -718,14 +721,14 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
     $head = idx($params, 'head');
     $against = idx($params, 'against');
 
-    if ($req_commit && !strlen($commit)) {
+    if ($req_commit && ($commit === null || !strlen($commit))) {
       throw new Exception(
         pht(
           'Diffusion URI action "%s" requires commit!',
           $action));
     }
 
-    if ($req_branch && !strlen($branch)) {
+    if ($req_branch && ($branch === null || !strlen($branch))) {
       throw new Exception(
         pht(
           'Diffusion URI action "%s" requires branch!',
@@ -736,25 +739,26 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
       return $this->getCommitURI($commit);
     }
 
-    if (strlen($path)) {
+    if (phutil_nonempty_string($path)) {
       $path = ltrim($path, '/');
       $path = str_replace(array(';', '$'), array(';;', '$$'), $path);
       $path = phutil_escape_uri($path);
     }
 
     $raw_branch = $branch;
-    if (strlen($branch)) {
+    if (phutil_nonempty_string($branch)) {
       $branch = phutil_escape_uri_path_component($branch);
       $path = "{$branch}/{$path}";
     }
 
     $raw_commit = $commit;
-    if (strlen($commit)) {
+    if (phutil_nonempty_scalar($commit)) {
       $commit = str_replace('$', '$$', $commit);
       $commit = ';'.phutil_escape_uri($commit);
     }
 
-    if (strlen($line)) {
+    $line = phutil_string_cast($line);
+    if (phutil_nonempty_string($line)) {
       $line = '$'.phutil_escape_uri($line);
     }
 
@@ -775,20 +779,20 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
         break;
       case 'compare':
         $uri = $this->getPathURI("/{$action}/");
-        if (strlen($head)) {
+        if ($head !== null && strlen($head)) {
           $query['head'] = $head;
-        } else if (strlen($raw_commit)) {
+        } else if ($raw_commit !== null && strlen($raw_commit)) {
           $query['commit'] = $raw_commit;
-        } else if (strlen($raw_branch)) {
+        } else if ($raw_branch !== null && strlen($raw_branch)) {
           $query['head'] = $raw_branch;
         }
 
-        if (strlen($against)) {
+        if ($against !== null && strlen($against)) {
           $query['against'] = $against;
         }
         break;
       case 'branch':
-        if (strlen($path)) {
+        if ($path != null && strlen($path)) {
           $uri = $this->getPathURI("/repository/{$path}");
         } else {
           $uri = $this->getPathURI('/');
@@ -862,7 +866,7 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
 
   public function getDefaultBranch() {
     $default = $this->getDetail('default-branch');
-    if (strlen($default)) {
+    if (phutil_nonempty_string($default)) {
       return $default;
     }
 
@@ -1156,7 +1160,7 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
    */
   public function getRemoteURIObject() {
     $raw_uri = $this->getDetail('remote-uri');
-    if (!strlen($raw_uri)) {
+    if ($raw_uri === null || !strlen($raw_uri)) {
       return new PhutilURI('');
     }
 
@@ -1943,7 +1947,7 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
           'point at this host, or the "device.id" configuration file on '.
           'this host may be incorrect.'.
           "\n\n".
-          'Requests routed within the cluster by Phabricator are always '.
+          'Requests routed within the cluster are always '.
           'expected to be sent to a node which can serve the request. To '.
           'prevent loops, this request will not be proxied again.'.
           "\n\n".
@@ -2205,7 +2209,7 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
         throw new PhutilAggregateException(
           pht(
             'Unable to read device public key while attempting to make '.
-            'authenticated method call within the Phabricator cluster. '.
+            'authenticated method call within the cluster. '.
             'Use `%s` to register keys for this device. Exception: %s',
             'bin/almanac register',
             $ex->getMessage()),
@@ -2220,7 +2224,7 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
         throw new PhutilAggregateException(
           pht(
             'Unable to read device private key while attempting to make '.
-            'authenticated method call within the Phabricator cluster. '.
+            'authenticated method call within the cluster. '.
             'Use `%s` to register keys for this device. Exception: %s',
             'bin/almanac register',
             $ex->getMessage()),
@@ -2269,10 +2273,9 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
       $never_proxy);
 
     if (!$client) {
-      $result = id(new ConduitCall($method, $params))
-        ->setUser($viewer)
-        ->execute();
-      $future = new ImmediateFuture($result);
+      $conduit_call = id(new ConduitCall($method, $params))
+        ->setUser($viewer);
+      $future = new MethodCallFuture($conduit_call, 'execute');
     } else {
       $future = $client->callMethod($method, $params);
     }
@@ -2477,7 +2480,8 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
       $has_https = false;
     }
 
-    $has_ssh = (bool)strlen(PhabricatorEnv::getEnvConfig('phd.user'));
+    $phd_user = PhabricatorEnv::getEnvConfig('phd.user');
+    $has_ssh = $phd_user !== null && strlen($phd_user);
 
     $protocol_map = array(
       PhabricatorRepositoryURI::BUILTIN_PROTOCOL_SSH => $has_ssh,
@@ -2815,7 +2819,7 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
     $permanent_rules = $this->getStringListForConduit($permanent_rules);
 
     $default_branch = $this->getDefaultBranch();
-    if (!strlen($default_branch)) {
+    if ($default_branch === null || !strlen($default_branch)) {
       $default_branch = null;
     }
 

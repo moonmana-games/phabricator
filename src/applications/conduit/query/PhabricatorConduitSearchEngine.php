@@ -39,7 +39,7 @@ final class PhabricatorConduitSearchEngine
     $query->withIsInternal(false);
 
     $contains = $saved->getParameter('nameContains');
-    if (strlen($contains)) {
+    if ($contains !== null && strlen($contains)) {
       $query->withNameContains($contains);
     }
 
@@ -88,7 +88,7 @@ final class PhabricatorConduitSearchEngine
               pht('Deprecated Methods'),
               pht(
                 'Show old methods which will be deleted in a future '.
-                'version of Phabricator.')),
+                'version of this software.')),
             $is_deprecated));
   }
 

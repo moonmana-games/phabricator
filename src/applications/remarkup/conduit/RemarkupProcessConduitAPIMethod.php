@@ -11,7 +11,7 @@ final class RemarkupProcessConduitAPIMethod extends ConduitAPIMethod {
   }
 
   public function getMethodDescription() {
-    return pht('Process text through remarkup in Phabricator context.');
+    return pht('Process text through remarkup.');
   }
 
   protected function defineReturnType() {
@@ -41,7 +41,7 @@ final class RemarkupProcessConduitAPIMethod extends ConduitAPIMethod {
 
     $engine_class = idx($this->getEngineContexts(), $context);
     if (!$engine_class) {
-      throw new ConduitException('ERR-INVALID_ENGINE');
+      throw new ConduitException('ERR-INVALID-ENGINE');
     }
 
     $engine = PhabricatorMarkupEngine::$engine_class();

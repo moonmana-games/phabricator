@@ -91,7 +91,7 @@ final class PhabricatorMailEmailEngine
       $parts = array();
 
       $encrypt_uri = $mail->getMustEncryptURI();
-      if (!strlen($encrypt_uri)) {
+      if ($encrypt_uri === null || !strlen($encrypt_uri)) {
         $encrypt_phid = $mail->getRelatedPHID();
         if ($encrypt_phid) {
           $encrypt_uri = urisprintf(
@@ -100,7 +100,7 @@ final class PhabricatorMailEmailEngine
         }
       }
 
-      if (strlen($encrypt_uri)) {
+      if ($encrypt_uri !== null && strlen($encrypt_uri)) {
         $parts[] = pht(
           'This secure message is notifying you of a change to this object:');
         $parts[] = PhabricatorEnv::getProductionURI($encrypt_uri);
@@ -119,6 +119,8 @@ final class PhabricatorMailEmailEngine
     }
 
     $body_limit = PhabricatorEnv::getEnvConfig('metamta.email-body-limit');
+
+    $body = phutil_string_cast($body);
     if (strlen($body) > $body_limit) {
       $body = id(new PhutilUTF8StringTruncator())
         ->setMaximumBytes($body_limit)
@@ -143,7 +145,7 @@ final class PhabricatorMailEmailEngine
 
     if ($send_html) {
       $html_body = $mail->getHTMLBody();
-      if (strlen($html_body)) {
+      if (phutil_nonempty_string($html_body)) {
         // NOTE: We just drop the entire HTML body if it won't fit. Safely
         // truncating HTML is hard, and we already have the text body to fall
         // back to.
@@ -166,7 +168,7 @@ final class PhabricatorMailEmailEngine
     if (PhabricatorEnv::getEnvConfig('phabricator.silent')) {
       $mail->setMessage(
         pht(
-          'Phabricator is running in silent mode. See `%s` '.
+          'This software is running in silent mode. See `%s` '.
           'in the configuration to change this setting.',
           'phabricator.silent'));
 
@@ -226,7 +228,7 @@ final class PhabricatorMailEmailEngine
     $mail = $this->getMail();
 
     $reply_raw = $mail->getReplyTo();
-    if (!strlen($reply_raw)) {
+    if (!phutil_nonempty_string($reply_raw)) {
       return null;
     }
 
@@ -240,8 +242,9 @@ final class PhabricatorMailEmailEngine
     }
 
     // If we don't have a display name, fill in a default.
-    if (!strlen($reply_address->getDisplayName())) {
-      $reply_address->setDisplayName(pht('Phabricator'));
+    $reply_display_name = $reply_address->getDisplayName();
+    if ($reply_display_name === null || !strlen($reply_display_name)) {
+      $reply_address->setDisplayName(PlatformSymbols::getPlatformServerName());
     }
 
     return $reply_address;
@@ -301,19 +304,23 @@ final class PhabricatorMailEmailEngine
       }
     }
 
-    $subject[] = trim($mail->getSubjectPrefix());
+    $subject_prefix = $mail->getSubjectPrefix();
+    $subject_prefix = phutil_string_cast($subject_prefix);
+    $subject_prefix = trim($subject_prefix);
+
+    $subject[] = $subject_prefix;
 
     // If mail content must be encrypted, we replace the subject with
     // a generic one.
     if ($must_encrypt) {
       $encrypt_subject = $mail->getMustEncryptSubject();
-      if (!strlen($encrypt_subject)) {
+      if ($encrypt_subject === null || !strlen($encrypt_subject)) {
         $encrypt_subject = pht('Object Updated');
       }
       $subject[] = $encrypt_subject;
     } else {
       $vary_prefix = $mail->getVarySubjectPrefix();
-      if (strlen($vary_prefix)) {
+      if (phutil_nonempty_string($vary_prefix)) {
         if ($this->shouldVarySubject()) {
           $subject[] = $vary_prefix;
         }
@@ -323,7 +330,7 @@ final class PhabricatorMailEmailEngine
     }
 
     foreach ($subject as $key => $part) {
-      if (!strlen($part)) {
+      if (!phutil_nonempty_string($part)) {
         unset($subject[$key]);
       }
     }
@@ -403,7 +410,7 @@ final class PhabricatorMailEmailEngine
     $headers = array();
 
     $thread_id = $mail->getThreadID();
-    if (!strlen($thread_id)) {
+    if (!phutil_nonempty_string($thread_id)) {
       return $headers;
     }
 
@@ -491,7 +498,7 @@ final class PhabricatorMailEmailEngine
     $object = id(new PhutilEmailAddress())
       ->setAddress($address);
 
-    if (strlen($name)) {
+    if ($name !== null && strlen($name)) {
       $object->setDisplayName($name);
     }
 
@@ -501,15 +508,15 @@ final class PhabricatorMailEmailEngine
   public function newDefaultEmailAddress() {
     $raw_address = PhabricatorEnv::getEnvConfig('metamta.default-address');
 
-    if (!strlen($raw_address)) {
+    if ($raw_address == null || !strlen($raw_address)) {
       $domain = $this->newMailDomain();
       $raw_address = "noreply@{$domain}";
     }
 
     $address = new PhutilEmailAddress($raw_address);
 
-    if (!strlen($address->getDisplayName())) {
-      $address->setDisplayName(pht('Phabricator'));
+    if (!phutil_nonempty_string($address->getDisplayName())) {
+      $address->setDisplayName(PlatformSymbols::getPlatformServerName());
     }
 
     return $address;
@@ -521,7 +528,7 @@ final class PhabricatorMailEmailEngine
 
   private function newMailDomain() {
     $domain = PhabricatorEnv::getEnvConfig('metamta.reply-handler-domain');
-    if (strlen($domain)) {
+    if ($domain !== null && strlen($domain)) {
       return $domain;
     }
 

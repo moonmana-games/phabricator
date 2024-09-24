@@ -474,7 +474,9 @@ abstract class PhabricatorEditEngine
           ->setIsDefault(true)
           ->setIsEdit(true);
 
-        if (!strlen($first->getName())) {
+        $first_name = $first->getName();
+
+        if ($first_name === null || $first_name === '') {
           $first->setName($this->getObjectCreateShortText());
         }
     } else {
@@ -939,7 +941,7 @@ abstract class PhabricatorEditEngine
       }
     } else {
       $form_key = $request->getURIData('formKey');
-      if (strlen($form_key)) {
+      if ($form_key !== null && strlen($form_key)) {
         $config = $this->loadEditEngineConfigurationWithIdentifier($form_key);
 
         if (!$config) {
@@ -969,14 +971,14 @@ abstract class PhabricatorEditEngine
     }
 
     $page_key = $request->getURIData('pageKey');
-    if (!strlen($page_key)) {
+    if ($page_key === null || !strlen($page_key)) {
       $pages = $this->getPages($object);
       if ($pages) {
         $page_key = head_key($pages);
       }
     }
 
-    if (strlen($page_key)) {
+    if ($page_key !== null && strlen($page_key)) {
       $page = $this->selectPage($object, $page_key);
       if (!$page) {
         return new Aphront404Response();
@@ -1167,7 +1169,7 @@ abstract class PhabricatorEditEngine
       if ($this->getIsCreate()) {
         $template = $request->getStr('template');
 
-        if (strlen($template)) {
+        if (phutil_nonempty_string($template)) {
           $template_object = $this->newObjectFromIdentifier(
             $template,
             array(
@@ -1906,6 +1908,11 @@ abstract class PhabricatorEditEngine
 
     $comment_text = $request->getStr('comment');
 
+    $comment_metadata = $request->getStr('comment_metadata');
+    if (phutil_nonempty_string($comment_metadata)) {
+      $comment_metadata = phutil_json_decode($comment_metadata);
+    }
+
     $actions = $request->getStr('editengine.actions');
     if ($actions) {
       $actions = phutil_json_decode($actions);
@@ -1921,10 +1928,9 @@ abstract class PhabricatorEditEngine
           $viewer->getPHID(),
           $current_version);
 
-        $is_empty = (!strlen($comment_text) && !$actions);
-
         $draft
           ->setProperty('comment', $comment_text)
+          ->setProperty('metadata', $comment_metadata)
           ->setProperty('actions', $actions)
           ->save();
 
@@ -2003,9 +2009,10 @@ abstract class PhabricatorEditEngine
       $xactions[] = $xaction;
     }
 
-    if (strlen($comment_text) || !$xactions) {
+    if (($comment_text !== null && strlen($comment_text)) || !$xactions) {
       $xactions[] = id(clone $template)
         ->setTransactionType(PhabricatorTransactions::TYPE_COMMENT)
+        ->setMetadataValue('remarkup.control', $comment_metadata)
         ->attachComment(
           id(clone $comment_template)
             ->setContent($comment_text));

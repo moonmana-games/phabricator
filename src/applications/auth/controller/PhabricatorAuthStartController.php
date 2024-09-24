@@ -31,7 +31,7 @@ final class PhabricatorAuthStartController
     $session_token = $request->getCookie(PhabricatorCookies::COOKIE_SESSION);
     $did_clear = $request->getStr('cleared');
 
-    if (strlen($session_token)) {
+    if ($session_token !== null && strlen($session_token)) {
       $kind = PhabricatorAuthSessionEngine::getSessionKindFromToken(
         $session_token);
       switch ($kind) {
@@ -90,15 +90,15 @@ final class PhabricatorAuthStartController
 
       return $this->renderError(
         pht(
-          'This Phabricator install is not configured with any enabled '.
-          'authentication providers which can be used to log in. If you '.
-          'have accidentally locked yourself out by disabling all providers, '.
-          'you can use `%s` to recover access to an account.',
-          'phabricator/bin/auth recover <username>'));
+          'This server is not configured with any enabled authentication '.
+          'providers which can be used to log in. If you have accidentally '.
+          'locked yourself out by disabling all providers, you can use `%s` '.
+          'to recover access to an account.',
+          './bin/auth recover <username>'));
     }
 
     $next_uri = $request->getStr('next');
-    if (!strlen($next_uri)) {
+    if (phutil_nonempty_string($next_uri)) {
       if ($this->getDelegatingController()) {
         // Only set a next URI from the request path if this controller was
         // delegated to, which happens when a user tries to view a page which
@@ -112,7 +112,7 @@ final class PhabricatorAuthStartController
     }
 
     if (!$request->isFormPost()) {
-      if (strlen($next_uri)) {
+      if (phutil_nonempty_string($next_uri)) {
         PhabricatorCookies::setNextURICookie($request, $next_uri);
       }
       PhabricatorCookies::setClientIDCookie($request);
@@ -226,7 +226,7 @@ final class PhabricatorAuthStartController
 
     $via_header = AphrontRequest::getViaHeaderName();
     $via_uri = AphrontRequest::getHTTPHeader($via_header);
-    if (strlen($via_uri)) {
+    if ($via_uri !== null && strlen($via_uri)) {
       PhabricatorCookies::setNextURICookie($request, $via_uri, $force = true);
     }
 

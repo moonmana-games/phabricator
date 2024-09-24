@@ -37,7 +37,7 @@ final class DiffusionBrowseQueryConduitAPIMethod
     $repository = $drequest->getRepository();
 
     $path = $request->getValue('path');
-    if (!strlen($path) || $path === '/') {
+    if ($path === null || !strlen($path) || $path === '/') {
       $path = null;
     }
 
@@ -229,11 +229,19 @@ final class DiffusionBrowseQueryConduitAPIMethod
         $commit);
 
       if (!$err) {
-        $tmp = new TempFile();
-        Filesystem::writeFile($tmp, $contents);
-        list($module_info) = $repository->execxLocalCommand(
-          'config -l -f %s',
-          $tmp);
+
+        // NOTE: After T13673, the user executing "git" may not be the same
+        // as the user this process is running as (usually the webserver user),
+        // so we can't reliably use a temporary file: the daemon user may not
+        // be able to use it.
+
+        // Use "--file -" to read from stdin instead. If this fails in some
+        // older versions of Git, we could exempt this particular command from
+        // sudoing to the daemon user.
+
+        $future = $repository->getLocalCommandFuture('config -l --file - --');
+        $future->write($contents);
+        list($module_info) = $future->resolvex();
 
         $dict = array();
         $lines = explode("\n", trim($module_info));
@@ -274,8 +282,13 @@ final class DiffusionBrowseQueryConduitAPIMethod
 
     $results = array();
 
-    $match_against = trim($path, '/');
-    $match_len = strlen($match_against);
+    if ($path !== null) {
+      $match_against = trim($path, '/');
+      $match_len = strlen($match_against);
+    } else {
+      $match_against = '';
+      $match_len = 0;
+    }
 
     // For the root, don't trim. For other paths, trim the "/" after we match.
     // We need this because Mercurial's canonical paths have no leading "/",
@@ -287,7 +300,7 @@ final class DiffusionBrowseQueryConduitAPIMethod
       if (strncmp($path, $match_against, $match_len)) {
         continue;
       }
-      if (!strlen($path)) {
+      if ($path === null || !strlen($path)) {
         continue;
       }
       $remainder = substr($path, $trim_len);

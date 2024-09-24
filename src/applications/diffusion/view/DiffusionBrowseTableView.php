@@ -3,17 +3,10 @@
 final class DiffusionBrowseTableView extends DiffusionView {
 
   private $paths;
-  private $handles = array();
 
   public function setPaths(array $paths) {
     assert_instances_of($paths, 'DiffusionRepositoryPath');
     $this->paths = $paths;
-    return $this;
-  }
-
-  public function setHandles(array $handles) {
-    assert_instances_of($handles, 'PhabricatorObjectHandle');
-    $this->handles = $handles;
     return $this;
   }
 
@@ -22,14 +15,17 @@ final class DiffusionBrowseTableView extends DiffusionView {
     $repository = $request->getRepository();
     require_celerity_resource('diffusion-css');
 
-    $base_path = trim($request->getPath(), '/');
-    if ($base_path) {
-      $base_path = $base_path.'/';
+    if ($request->getPath() !== null) {
+      $base_path = trim($request->getPath(), '/');
+      if ($base_path) {
+        $base_path = $base_path.'/';
+      }
+    } else {
+      $base_path = '';
     }
 
     $need_pull = array();
     $rows = array();
-    $show_edit = false;
     foreach ($this->paths as $path) {
       $full_path = $base_path.$path->getPath();
 

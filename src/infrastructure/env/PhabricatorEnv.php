@@ -125,7 +125,7 @@ final class PhabricatorEnv extends Phobject {
     // If an instance identifier is defined, write it into the environment so
     // it's available to subprocesses.
     $instance = self::getEnvConfig('cluster.instance');
-    if (strlen($instance)) {
+    if ($instance !== null && strlen($instance)) {
       putenv('PHABRICATOR_INSTANCE='.$instance);
       $_ENV['PHABRICATOR_INSTANCE'] = $instance;
     }
@@ -554,17 +554,17 @@ final class PhabricatorEnv extends Phobject {
     switch ($reason) {
       case self::READONLY_MASTERLESS:
         return pht(
-          'Phabricator is in read-only mode (no writable database '.
+          'This server is in read-only mode (no writable database '.
           'is configured).');
       case self::READONLY_UNREACHABLE:
         return pht(
-          'Phabricator is in read-only mode (unreachable master).');
+          'This server is in read-only mode (unreachable master).');
       case self::READONLY_SEVERED:
         return pht(
-          'Phabricator is in read-only mode (major interruption).');
+          'This server is in read-only mode (major interruption).');
     }
 
-    return pht('Phabricator is in read-only mode.');
+    return pht('This server is in read-only mode.');
   }
 
   public static function getReadOnlyURI() {
@@ -884,7 +884,7 @@ final class PhabricatorEnv extends Phobject {
     if (!$cluster_addresses) {
       throw new Exception(
         pht(
-          'Phabricator is not configured to serve cluster requests. '.
+          'This server is not configured to serve cluster requests. '.
           'Set `cluster.addresses` in the configuration to whitelist '.
           'cluster hosts before sending requests that use a cluster '.
           'authentication mechanism.'));

@@ -288,7 +288,7 @@ final class PhabricatorFile extends PhabricatorFileDAO
     // update the parent file if a MIME type hasn't been provided. This matters
     // for large media files like video.
     $mime_type = idx($params, 'mime-type');
-    if (!strlen($mime_type)) {
+    if ($mime_type === null || !strlen($mime_type)) {
       $file->setMimeType('application/octet-stream');
     }
 
@@ -856,7 +856,7 @@ final class PhabricatorFile extends PhabricatorFileDAO
     // instance identity in the path allows us to distinguish between requests
     // originating from different instances but served through the same CDN.
     $instance = PhabricatorEnv::getEnvConfig('cluster.instance');
-    if (strlen($instance)) {
+    if ($instance !== null && strlen($instance)) {
       $parts[] = '@'.$instance;
     }
 
@@ -903,7 +903,7 @@ final class PhabricatorFile extends PhabricatorFileDAO
     $parts[] = 'xform';
 
     $instance = PhabricatorEnv::getEnvConfig('cluster.instance');
-    if (strlen($instance)) {
+    if ($instance !== null && strlen($instance)) {
       $parts[] = '@'.$instance;
     }
 
@@ -1278,7 +1278,7 @@ final class PhabricatorFile extends PhabricatorFileDAO
   public function getAltText() {
     $alt = $this->getCustomAltText();
 
-    if (strlen($alt)) {
+    if ($alt !== null && strlen($alt)) {
       return $alt;
     }
 
@@ -1309,7 +1309,7 @@ final class PhabricatorFile extends PhabricatorFileDAO
     $parts = array();
 
     $name = $this->getName();
-    if (strlen($name)) {
+    if ($name !== null && strlen($name)) {
       $parts[] = $name;
     }
 
@@ -1416,28 +1416,25 @@ final class PhabricatorFile extends PhabricatorFileDAO
    * @return this
    */
   public function attachToObject($phid) {
-    $edge_type = PhabricatorObjectHasFileEdgeType::EDGECONST;
+    $attachment_table = new PhabricatorFileAttachment();
+    $attachment_conn = $attachment_table->establishConnection('w');
 
-    id(new PhabricatorEdgeEditor())
-      ->addEdge($phid, $edge_type, $this->getPHID())
-      ->save();
-
-    return $this;
-  }
-
-
-  /**
-   * Remove the policy edge between this file and some object.
-   *
-   * @param phid Object PHID to detach from.
-   * @return this
-   */
-  public function detachFromObject($phid) {
-    $edge_type = PhabricatorObjectHasFileEdgeType::EDGECONST;
-
-    id(new PhabricatorEdgeEditor())
-      ->removeEdge($phid, $edge_type, $this->getPHID())
-      ->save();
+    queryfx(
+      $attachment_conn,
+      'INSERT INTO %R (objectPHID, filePHID, attachmentMode,
+          attacherPHID, dateCreated, dateModified)
+        VALUES (%s, %s, %s, %ns, %d, %d)
+        ON DUPLICATE KEY UPDATE
+          attachmentMode = VALUES(attachmentMode),
+          attacherPHID = VALUES(attacherPHID),
+          dateModified = VALUES(dateModified)',
+      $attachment_table,
+      $phid,
+      $this->getPHID(),
+      PhabricatorFileAttachment::MODE_ATTACH,
+      null,
+      PhabricatorTime::getNow(),
+      PhabricatorTime::getNow());
 
     return $this;
   }
