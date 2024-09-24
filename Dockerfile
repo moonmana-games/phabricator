@@ -1,5 +1,5 @@
 ##### Start Phabricator
-FROM php:7.4-apache-buster
+FROM php:8.2-apache
 ##### End Phabricator
 
 LABEL org.opencontainers.image.source https://github.com/moonmana-games/phabricator
