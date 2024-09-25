@@ -8,19 +8,20 @@ LABEL org.opencontainers.image.source https://github.com/moonmana-games/phabrica
 # @see https://secure.phabricator.com/book/phabricator/article/installation_guide/#installing-required-comp
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
-    git \
-    mercurial \
-    subversion \
     ca-certificates \
-    # @see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=944908
-    python3-pkg-resources \
-    python3-pygments \
+    git \
     imagemagick \
+    libzip4 \
+    mariadb-client \
+    mercurial \
     # @see https://secure.phabricator.com/w/guides/dependencies/
     # provides ssh-keygen and ssh, these are needed to sync ssh repositories
     openssh-client \
     procps \
-    mariadb-client \
+    # @see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=944908
+    python3-pkg-resources \
+    python3-pygments \
+    subversion \
   && rm -rf /var/lib/apt/lists/*
 
 # install the PHP extensions we need
@@ -36,11 +37,12 @@ RUN set -ex; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
       libcurl4-gnutls-dev \
-      libjpeg62-turbo-dev \
-      libpng-dev \
       libfreetype6-dev \
-      libzip-dev \
+      libjpeg62-turbo-dev \
       libonig-dev \
+      libpng-dev \
+      libzip-dev \
+      libzip4 \
     ; \
     \
   docker-php-ext-configure gd \
@@ -61,7 +63,7 @@ RUN set -ex; \
   \
   # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
     apt-mark auto '.*' > /dev/null; \
-    apt-mark manual $savedAptMark; \
+    apt-mark manual ${savedAptMark}; \
     ldd "$(php -r 'echo ini_get("extension_dir");')"/*.so \
         | awk '/=>/ { print $3 }' \
         | sort -u \
