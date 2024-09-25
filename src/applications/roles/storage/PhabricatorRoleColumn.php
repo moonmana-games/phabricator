@@ -105,7 +105,7 @@ final class PhabricatorRoleColumn
     }
 
     $name = $this->getName();
-    if (strlen($name)) {
+    if ($name !== null && $name !== '') {
       return $name;
     }
 

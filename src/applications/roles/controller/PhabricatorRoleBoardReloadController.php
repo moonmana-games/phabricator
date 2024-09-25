@@ -12,7 +12,7 @@ final class PhabricatorRoleBoardReloadController
     }
 
     $order = $request->getStr('order');
-    if (!strlen($order)) {
+    if ($order === null || $order === '') {
       $order = PhabricatorRoleColumnNaturalOrder::ORDERKEY;
     }
 

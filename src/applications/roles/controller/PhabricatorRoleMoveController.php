@@ -16,7 +16,7 @@ final class PhabricatorRoleMoveController
     $before_phids = $request->getStrList('beforePHIDs');
 
     $order = $request->getStr('order');
-    if (!strlen($order)) {
+    if ($order === null || $order === '') {
       $order = PhabricatorRoleColumnNaturalOrder::ORDERKEY;
     }
 
@@ -26,7 +26,7 @@ final class PhabricatorRoleMoveController
 
     $edit_header = null;
     $raw_header = $request->getStr('header');
-    if (strlen($raw_header)) {
+    if ($raw_header !== null && $raw_header !== '') {
       $edit_header = phutil_json_decode($raw_header);
     } else {
       $edit_header = array();

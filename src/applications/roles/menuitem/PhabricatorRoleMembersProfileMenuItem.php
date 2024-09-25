@@ -21,7 +21,7 @@ final class PhabricatorRoleMembersProfileMenuItem
     PhabricatorProfileMenuItemConfiguration $config) {
     $name = $config->getMenuItemProperty('name');
 
-    if (strlen($name)) {
+    if ($name !== null && $name !== '') {
       return $name;
     }
 

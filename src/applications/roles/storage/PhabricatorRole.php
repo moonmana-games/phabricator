@@ -407,11 +407,11 @@ final class PhabricatorRole extends PhabricatorRoleDAO
       $this->setMailKey(Filesystem::readRandomCharacters(20));
     }
 
-    if (!strlen($this->getPHID())) {
+    if ($this->getPHID() === null || $this->getPHID() === '') {
       $this->setPHID($this->generatePHID());
     }
 
-    if (!strlen($this->getRolePathKey())) {
+    if ($this->getRolePathKey() === null || $this->getRolePathKey() === '') {
       $hash = PhabricatorHash::digestForIndex($this->getPHID());
       $hash = substr($hash, 0, 4);
       $this->setRolePathKey($hash);

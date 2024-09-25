@@ -83,10 +83,10 @@ final class PhabricatorRoleDatasource
       }
 
       $slug = $role->getPrimarySlug();
-      if (!strlen($slug)) {
+      if ($slug === null || $slug === '') {
         foreach ($role->getSlugs() as $slug_object) {
           $slug = $slug_object->getSlug();
-          if (strlen($slug)) {
+          if ($slug !== null && $slug !== '') {
             break;
           }
         }
@@ -132,7 +132,7 @@ final class PhabricatorRoleDatasource
         ->setPriorityType('role')
         ->setClosed($closed);
 
-      if (strlen($slug)) {
+      if ($slug !== null && $slug !== '') {
         $role_result->setAutocomplete('#'.$slug);
       }
 
@@ -142,7 +142,7 @@ final class PhabricatorRoleDatasource
         $role_result->addAttribute($role->getDisplayIconName());
 
         $description = idx($descriptions, $phid);
-        if (strlen($description)) {
+        if ($description !== null && $description !== '') {
           $summary = PhabricatorMarkupEngine::summarizeSentence($description);
           $role_result->addAttribute($summary);
         }

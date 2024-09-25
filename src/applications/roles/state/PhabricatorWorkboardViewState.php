@@ -41,7 +41,8 @@ final class PhabricatorRoleWorkboardViewState
       $this->requestState['filter'] = $request->getStr('filter');
     }
 
-    if (strlen($request->getURIData('queryKey'))) {
+    $query_key = $request->getURIData('queryKey');
+    if ($query_key !== null && $query_key !== '') {
       $this->requestState['filter'] = $request->getURIData('queryKey');
     }
 
@@ -169,7 +170,7 @@ final class PhabricatorRoleWorkboardViewState
 
   public function getQueryKey() {
     $request_query = idx($this->requestState, 'filter');
-    if (strlen($request_query)) {
+    if ($request_query !== null && $request_query !== '') {
       return $request_query;
     }
 
@@ -203,7 +204,7 @@ final class PhabricatorRoleWorkboardViewState
 
     $default_query = $role->getDefaultWorkboardFilter();
 
-    if (strlen($default_query)) {
+    if ($default_query !== null && $default_query !== '') {
       return $default_query;
     }
 
