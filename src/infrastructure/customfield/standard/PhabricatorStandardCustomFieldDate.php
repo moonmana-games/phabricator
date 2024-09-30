@@ -74,7 +74,7 @@ final class PhabricatorStandardCustomFieldDate
     // specify as a string. Parse the string into an epoch.
 
     $value = $this->getFieldValue();
-    if (!ctype_digit($value)) {
+    if (!ctype_digit(phutil_string_cast($value))) {
       $value = PhabricatorTime::parseLocalTime($value, $this->getViewer());
     }
 
