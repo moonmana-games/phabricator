@@ -786,7 +786,7 @@ final class PhabricatorFile extends PhabricatorFileDAO
     // it just means we'll store extra data when users upload duplicate files
     // instead of being able to deduplicate it.
 
-    $hash = hash('sha256', $data, $raw_output = false);
+    $hash = hash('sha256', phutil_string_cast($data), $raw_output = false);
     if ($hash === false) {
       return null;
     }
