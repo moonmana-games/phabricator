@@ -406,7 +406,7 @@ final class PhabricatorFile extends PhabricatorFileDAO
         $exceptions);
     }
 
-    $file->setByteSize(strlen($data));
+    $file->setByteSize(strlen(phutil_string_cast($data)));
 
     $hash = self::hashFileContent($data);
     $file->setContentHash($hash);
