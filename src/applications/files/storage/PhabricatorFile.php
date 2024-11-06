@@ -328,7 +328,7 @@ final class PhabricatorFile extends PhabricatorFileDAO
     if (isset($params['storageEngines'])) {
       $engines = $params['storageEngines'];
     } else {
-      $size = strlen($data);
+      $size = strlen(phutil_string_cast($data));
       $engines = PhabricatorFileStorageEngine::loadStorageEngines($size);
 
       if (!$engines) {
