@@ -13,7 +13,7 @@ services:
     image: mariadb:10.5
     volumes:
     - db-data:/var/lib/mysql
-    - ./mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+    - ./mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
     environment:
       MYSQL_ROOT_PASSWORD: CHANGEME
 volumes:

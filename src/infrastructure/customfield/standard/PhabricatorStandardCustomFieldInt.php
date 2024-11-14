@@ -101,14 +101,14 @@ final class PhabricatorStandardCustomFieldInt
   public function getApplicationTransactionHasEffect(
     PhabricatorApplicationTransaction $xaction) {
 
-    $old = $xaction->getOldValue();
-    $new = $xaction->getNewValue();
+    $old = phutil_string_cast($xaction->getOldValue());
+    $new = phutil_string_cast($xaction->getNewValue());
     if (!strlen($old) && strlen($new)) {
       return true;
-    } else if (strlen($old) && !strlen($new)) {
+    } elseif (strlen($old) && !strlen($new)) {
       return true;
     } else {
-      return ((int)$old !== (int)$new);
+      return (int)$xaction->getOldValue() !== $xaction->getNewValue();
     }
   }
 
